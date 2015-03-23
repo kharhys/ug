@@ -30,4 +30,22 @@ class Invoice extends \Eloquent {
     {
         return $this->items->sum('Amount');
     }
+
+    public function payments()
+    {
+        return $this->hasMany('Receipt','InvoiceHeaderID');
+    }
+
+
+    public function paid()
+    {
+        return $this->payments()->sum('Amount');
+    }
+
+    public function balance()
+    {
+        $amount = $this->paid();
+        $required = $this->total();
+        return $required-$amount;
+    }
 }

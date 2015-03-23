@@ -1,6 +1,8 @@
+/bootstrap/compiled.php
+/vendor
 composer.phar
-vendor/
-iistart.htm
-iis-85.png
-aspnet_client
-.idea/
+composer.lock
+.env.*.php
+.env.php
+.DS_Store
+Thumbs.db

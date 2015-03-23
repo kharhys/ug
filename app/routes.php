@@ -47,12 +47,16 @@ Route::group(['before'=>'auth'],function(){
 		Route::get('',['as'=>'list.departments','uses'=>'ServicesController@index']);
 		Route::get('{id}/list',['as'=>'list.services','uses'=>'ServicesController@getServices']);
 		Route::get('apply',['as'=>'get.apply.service','uses'=>'ServicesController@getApplyForm']);
+		Route::get('houserent',['as'=>'get.houserent','uses'=>'ServicesController@getHouserent']);
+		Route::get('landrates',['as'=>'get.landrates','uses'=>'ServicesController@getLandrates']);
 		Route::post('apply',['as'=>'post.apply.service','uses'=>'ServicesController@postApplyForm']);
-		Route::post('search',['as'=>'search.land','uses'=>'ServicesController@searchLand']);
+		Route::post('search_land',['as'=>'search.land','uses'=>'ServicesController@searchLand']);
+		Route::post('search_housing',['as'=>'search.housing','uses'=>'ServicesController@searchHousing']);
 	});
 
 	Route::group(['prefix'=>'applications'],function(){
 		Route::get('',['as'=>'my.applications','uses'=>'HomeController@showApplications']);
+		Route::get('current',['as'=>'approved.applications','uses'=>'HomeController@approvedApplications']);
 	});
 
 	Route::group(['prefix'=>'bills'],function(){
@@ -67,7 +71,9 @@ Route::group(['before'=>'auth'],function(){
 		Route::get('users',['as'=>'list.users.ajax','uses'=>'AjaxController@getUsers']);
 		Route::get('biz',['as'=>'list.businesses.ajax','uses'=>'AjaxController@getBusinesses']);
 		Route::get('apps',['as'=>'list.applications.ajax','uses'=>'AjaxController@getApplications']);
+		Route::get('apps',['as'=>'list.approved_applications.ajax','uses'=>'AjaxController@approvedApplications']);
 		Route::get('bills',['as'=>'list.bills.ajax','uses'=>'AjaxController@getInvoices']);
 		Route::get('invoice/{id}/pay',['as'=>'pay.invoice','uses'=>'PaymentController@getPaymentStatus']);
+		Route::any('estate/house',['as'=>'get.houses','uses'=>'ServicesController@fetchEstateHouses']);
 	});
 });

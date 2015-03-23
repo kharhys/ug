@@ -2,6 +2,7 @@
 
 @section('content')
 			<div class="text-center">
+				{{Api::showLogo(null,200,200)}}
 			</div>
 
 			<p>

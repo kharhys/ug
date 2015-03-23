@@ -8,13 +8,18 @@
 
 class MPESA extends  \Eloquent{
 
-    protected $table= 'mpesa';
+  protected $table= 'Receipts';
 
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'ReceiptID';
 
    public function scopeFindByAccount($query,$account_no)
    {
-       return $query->where('mpesa_acc','=',$account_no);
+       return $query->where('InvoiceHeaderID','=',$account_no);
+   }
+
+   public function id()
+   {
+       return $this->ReceiptID;
    }
 
 

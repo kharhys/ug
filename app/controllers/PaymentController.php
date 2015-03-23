@@ -13,18 +13,21 @@ class PaymentController extends BaseController {
         $invoice = Invoice::findOrFail($account);
         $required = $invoice->total();
 
-        $amount = MPESA::FindByAccount($account)->sum('mpesa_amt');
+        $amount = MPESA::FindByAccount($account)->sum('Amount');
 
 
         if (!$amount){
             $data['code'] = 400;
             $data['message'] = "No payment has  been made";
+            $data['balance'] = $required - $amount;
         }elseif ($amount < $required){
             $data['code'] = 300;
             $data['message'] = "Please complete your payment, balance is ".($required - $amount);
-        }elseif ($amount < $required || $amount == $required){
+            $data['balance'] = $required - $amount;
+        }elseif ($amount >= $required){
             $data['code'] = 200;
-            $data['message'] = "Payment has been made successfully. Redirecting....please wait.....";
+            $data['message'] = "Payment has been made successfully. Your permit will be generated";
+            $data['balance'] = $required - $amount;
         }
 
         return Response::json($data);

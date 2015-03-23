@@ -62,7 +62,17 @@ class HomeController extends BaseController {
 	}
 
 	public function showApplications(){
+
 		return View::make('services.applications');
+	}
+
+	public function approvedApplications(){
+
+		return View::make('services.approved_applications');
+	}
+
+	public function showPermits(){
+		return View::make('services.permits');
 	}
 
 	public function showBills()
@@ -75,6 +85,13 @@ class HomeController extends BaseController {
 		$invoice = Invoice::findOrFail($id);
 
 		return View::make('services.invoice',['invoice'=>$invoice]);
+	}
+
+	public function downloadPermit($id)
+	{
+		$permit = Application::findOrFail($id);
+		$file = HTML::link('http://localhost/documents/'.$permit->PermitNo.'.pdf');
+		return Response::download($file);
 	}
 
 }

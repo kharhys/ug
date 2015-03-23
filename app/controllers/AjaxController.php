@@ -41,7 +41,8 @@ class AjaxController extends BaseController {
 
         return Datatables::of($biz)
             ->remove_column('id')
-            ->add_column('view','<a href="{{route(\'view.biz\',$id)}}" >Show</a>')
+            #->add_column('view','<a href="{{route(\'view.biz\',$id)}}" >Show</a>')
+            ->add_column('view','<a href="#" >Show</a>')
             ->make();
     }
 
@@ -58,10 +59,56 @@ class AjaxController extends BaseController {
             ->join('Customer','Customer.CustomerID','=','ServiceHeader.CustomerID')
             ->join('Services','Services.ServiceID','=','ServiceHeader.ServiceID')
             ->join('ServiceStatus','ServiceStatus.ServiceStatusID','=','ServiceHeader.ServiceStatusID');
+        
+        return Datatables::of($apps)
+            ->remove_column('ID')
+            //->add_column('view','<a href="{{route(\'view.biz\',$ID)}}" >Show</a>')
+            ->add_column('view','<a href="./uploads/9-Registration-Certificate.pdf" >Show</a>')
+            ->make();
+    }
+
+    public function approvedApplications()
+    {
+        $apps = Application::select([
+            'ServiceHeader.ServiceHeaderID as ID',
+            'Customer.CustomerName',
+            'Services.ServiceName',
+            'ServiceHeader.CreatedDate as Date',
+            'ServiceStatus.ServiceStatusDisplay as Status'
+        ])
+            ->where('Customer.CustomerProfileID', Auth::user()->CustomerProfileID)
+            ->where('ServiceStatus.ServiceStatusID', 5)
+            ->join('Customer','Customer.CustomerID','=','ServiceHeader.CustomerID')
+            ->join('Services','Services.ServiceID','=','ServiceHeader.ServiceID')
+            ->join('ServiceStatus','ServiceStatus.ServiceStatusID','=','ServiceHeader.ServiceStatusID');
 
         return Datatables::of($apps)
             ->remove_column('ID')
-            ->add_column('view','<a href="{{route(\'view.biz\',$ID)}}" >Show</a>')
+            //->add_column('view','<a href="{{route(\'view.biz\',$ID)}}" >Show</a>')
+            ->add_column('view','<a href="./uploads/9-Registration-Certificate.pdf" >Show</a>')
+            ->make();
+    }
+
+
+    public function getPermits()
+    {
+        $apps = Application::select([
+            'ServiceHeader.PermitNo',
+            'ServiceHeader.ServiceHeaderID as ID',
+            'Customer.CustomerName',
+            'Services.ServiceName',
+            'ServiceHeader.CreatedDate as Date',
+            'ServiceStatus.ServiceStatusDisplay as Status'
+        ])
+            ->Permits()
+            ->where('Customer.CustomerProfileID',Auth::user()->CustomerProfileID)
+            ->join('Customer','Customer.CustomerID','=','ServiceHeader.CustomerID')
+            ->join('Services','Services.ServiceID','=','ServiceHeader.ServiceID')
+            ->join('ServiceStatus','ServiceStatus.ServiceStatusID','=','ServiceHeader.ServiceStatusID');
+
+        return Datatables::of($apps)
+            ->remove_column('ID')
+            ->add_column('view','<a href="{{route(\'download.permit\',$ID)}}" >Download</a>')
             ->make();
     }
 

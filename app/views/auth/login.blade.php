@@ -1,18 +1,8 @@
 @extends('app')
 
-<header class="bg-dark"></header>
-
-<table style="width:71%; margin: 0 auto">
-  <tr>
-    <td width="50%"> <h1> <a href="/">  <img src="../images/logo.png" width="15%"/> </a><small>County Revenue Management System</small></h1> </td>
-    <td align="right">
-    </td>
-  </tr>
-</table>
-
 @section('content')
 
-	<form class="form-horizontal span6 offset3" role="form" method="POST" action="/login">
+	<form class="form-horizontal span6 offset3" role="form" method="POST" action="{{route('post.login')}}">
 		<h2>User Login</h2>
 		<input type="hidden" name="_token" value="{{ csrf_token() }}">
 

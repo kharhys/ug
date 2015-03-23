@@ -18,58 +18,46 @@
     <ul class="tabs-holder">
         <li class="special"><a href="{{route('home')}}"> Home </a></li>
         <li class="active"><a href="#tab_manage"> Manage </a></li>
+        <li class=""><a href="#tab_services"> Services </a></li>
         <li class=""><a href="#tab_settings">Settings</a></li>
         <li class=""><a href="#tab_support">Support</a></li>
-        <!--
-        <li class=""><a href="#tab_account">My Account</a></li>
-        <li class=""><a href="#tab_support">Support</a></li>
-        -->
     </ul>
 
     <div class="tabs-content">
         <div class="tab-panel" id="tab_manage" style="display: none;">
             <div class="tab-panel-group">
                 <div class="tab-group-content">
-                    <a class="fluent-big-button" href="{{route('list.businesses')}}"><i style="display:block" class="fa fa-2x fa-list"> </i> <br/> Businesses</a>
-                    <a class="fluent-big-button" href="{{route('get.add.business')}}"><i style="display:block" class="fa fa-2x fa-plus-circle"> </i> <br/> New <br/> Business</a>
-                    <!--
-                    <div class="tab-content-segment">
-                        <button class="fluent-big-button dropdown-toggle">
-                            <span class="icon-pictures"></span>
-                            <span class="button-label">Create<br>element</span>
-                        </button>
-                        <ul class="dropdown-menu" data-role="dropdown">
-                            <li><a href="{{route('get.add.user')}}">User Account</a></li>
-                            <li><a href="{{route('get.add.business')}}">Business</a></li>
-                        </ul>
-                    </div>
-                    <div class="tab-content-segment">
-                        <button class="fluent-big-button">
-                            <span class="icon-cancel"></span>
-                            <span class="button-label">Delete</span>
-                        </button>
-                    </div>
-                  -->
-
+                    <a class="fluent-big-button" href="{{route('list.businesses')}}"><i style="display:block" class="fa fa-2x fa-list"> </i> Businesses</a>
+                    <a class="fluent-big-button" href="{{route('get.add.business')}}"><i style="display:block" class="fa fa-2x fa-plus-circle"> </i> New</a>
                 </div>
                 <div class="tab-group-caption">Business</div>
             </div>
             <div class="tab-panel-group">
                 <div class="tab-group-content">
-                    <a class="fluent-big-button" href="{{route('list.departments')}}"><i style="display:block" class="fa fa-2x fa-list"> </i> <br/> Services</a>
-                    <a class="fluent-big-button" href="{{route('my.applications')}}"><i style="display:block" class="fa fa-2x fa-list-ul"> </i> <br/> Applications</a>
-                    <a class="fluent-big-button" href="{{route('my.applications')}}"><i style="display:block" class="fa fa-2x fa-plus-circle"> </i> <br/> New <br/> Application</a>
+                    <a class="fluent-big-button" href="{{route('my.applications')}}"><i style="display:block" class="fa fa-2x fa-list-ul"> </i>  Applications</a>
+                    <a class="fluent-big-button" href="{{route('get.houserent')}}"><i style="display:block" class="fa fa-2x fa-bed"> </i>  Rent</a>
+                    <a class="fluent-big-button" href="{{route('get.landrates')}}"><i style="display:block" class="fa fa-2x fa-newspaper-o"> </i>  Rates</a>
                 </div>
                 <div class="tab-group-caption">Services</div>
             </div>
             <div class="tab-panel-group">
                 <div class="tab-group-content">
                     <a class="fluent-big-button" href="{{route('my.bills')}}"><i style="display:block" class="fa fa-2x fa-fax"> </i> <br/> Invoices </a>
-                    <a class="fluent-big-button" href="{{route('my.applications')}}"><i style="display:block" class="fa fa-2x fa-bank"> </i> <br/> Payments </a>
-                    <a class="fluent-big-button" href="{{route('my.applications')}}"><i style="display:block" class="fa fa-2x fa-file-text-o"> </i> <br/> Permits </a>
+                    <a class="fluent-big-button" href="{{route('my.applications')}}"><i style="display:block" class="fa fa-2x fa-bank"> </i>  Payments </a>
+                    <a class="fluent-big-button" href="{{route('my.applications')}}"><i style="display:block" class="fa fa-2x fa-file-text-o"> </i> Permits </a>
                 </div>
                 <div class="tab-group-caption">Reports</div>
             </div>
+        </div>
+
+        <div class="tab-panel" id="tab_services" style="display: none;">
+          <div class="tab-panel-group">
+              <div class="tab-group-content">
+                  <a class="fluent-big-button" href="{{route('approved.applications')}}"><i style="display:block" class="fa fa-2x fa-list"> </i> Current </a>
+                  <a class="fluent-big-button" href="{{route('list.departments')}}"><i style="display:block" class="fa fa-2x fa-plus-circle"> </i>  New</a>
+              </div>
+              <div class="tab-group-caption">Services</div>
+          </div>
         </div>
 
         <div class="tab-panel" id="tab_settings" style="display: none;">
@@ -89,7 +77,7 @@
                   <a class="fluent-big-button" href="{{route('my.profile')}}"><i style="display:block" class="fa fa-2x fa-list"> </i> <br/> Help </a>
                   <a class="fluent-big-button" href="{{route('list.users')}}"><i style="display:block" class="fa fa-2x fa-users"> </i> <br/> About </a>
               </div>
-              <div class="tab-group-caption">Settings</div>
+              <div class="tab-group-caption">Support</div>
           </div>
         </div>
 

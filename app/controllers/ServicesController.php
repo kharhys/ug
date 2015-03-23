@@ -17,23 +17,7 @@ class ServicesController extends BaseController{
         #var_dump(Input::get('search'));
         $lrnqs = Input::get('search');
 
-        function byUpn($qs) {
-
-          $sid = FormData::where('Value', $qs)->where('FormColumnID', 11)->pluck('ServiceHeaderID');
-          $lrn = FormData::where('ServiceHeaderID', $sid)->where('FormColumnID', 11)->pluck('Value');
-
-          $oid = ServiceHeader::where('ServiceHeaderID', $sid)->pluck('CustomerID');
-          $cid = Customer::where('CustomerID', $oid)->pluck('CustomerID');
-          $own = Customer::where('CustomerID', $oid)->first();
-
-          $ihi = Invoice::where('CustomerID', $cid)->where('Paid', false)->pluck('InvoiceHeaderID');
-          $invd = InvoiceLine::where('InvoiceHeaderID', $ihi)->pluck('Amount');
-          $paid = Receipt::where('InvoiceHeaderID', $ihi)->pluck('Amount');
-          $bal = (float)$invd - (float)$paid;
-
-          return [ 'owner' => $own, 'due' => $bal, 'lrnumber' => $lrn ];
-        }
-        function byLrnum($qs) {
+        function find($qs) {
           $sid = FormData::where('Value', $qs)->where('FormColumnID', 12)->pluck('ServiceHeaderID');
           $lrn = FormData::where('ServiceHeaderID', $sid)->where('FormColumnID', 12)->pluck('Value');
 
@@ -46,30 +30,67 @@ class ServicesController extends BaseController{
           $paid = Receipt::where('InvoiceHeaderID', $ihi)->pluck('Amount');
           $bal = (float)$invd - (float)$paid;
 
-          return [ 'owner' => $own, 'due' => $bal, 'lrnumber' => $lrn ];
-        }
-        function byName($qs) {
-          $cid = Customer::where('CustomerName', $qs)->pluck('CustomerID');
-          $own = Customer::where('CustomerID', $cid)->first();
+          $inv = InvoiceView::where('ServiceGroupID', 3)->where('CustomerID', Auth::id())->pluck('InvoiceHeaderID');
 
-          $parcels = ServiceHeader::where('CustomerID', $cid)->where('FormID', 3)->get();
-          return [ 'owner' => $own, 'parcels' => $parcels ];
+          return [ 'owner' => $own, 'due' => $bal, 'lrnumber' => $lrn, 'invoice' => $inv ];
         }
 
-        $land = byLrnum($lrnqs);
+        $land = find($lrnqs);
 
-        return View::make('services.search', ['land' => $land ]);
+        return View::make('services.search_land', ['land' => $land, 'owner' => $land['owner'], 'due' => $land['due'], 'inv' => $land['invoice'] ]);
+    }
+
+    public function searchHousing() {
+        //dd(Input::all());
+        $eqs = Input::get('estate');
+        $hqs = Input::get('house');
+
+        $info = InvoiceView::select(['CustomerName', 'Balance', 'InvoiceHeaderID'])->where('ServiceID', $eqs)->first();
+        if(isset($info)) {
+          $info = $info->toArray();
+          $invd = true;
+        } else {
+          $info = [ 'warning' => 'No invoice has been issued' ];
+          $invd = false;
+        }
+
+        return View::make('services.search_housing', [ 'house' => $info, 'invoiced' => $invd ]);
     }
 
     public function getServices($id) {
         $dep = ServiceGroup::findOrFail($id);
 
         $groups = Category::where('ServiceGroupID',$dep->id())->get();
+        return View::make('services.list',['entities'=> $groups ]);
+    }
 
-        #return Response::json($groups);
-        #var_dump($dep->id());
-        $service = $groups->toArray()[0]['CategoryName'];
-        return View::make('services.list',['entities'=> $groups, 'srvice' => $service ]);
+    public function getHouserent() {
+      $estates = Service::where('ServiceCategoryID', 50)->lists('ServiceName','ServiceID');
+      //dd($estates);
+      //$estates = Estate::lists('EstateName');
+      $houses = House::where('ServiceID', 389)->lists('HouseNo','HouseID');
+      return View::make('houserent',['estates'=> $estates, 'houses' => $houses ]);
+    }
+
+    public function getLandRates() {
+      $land = House::where('ServiceID', 389)->lists('HouseNo','HouseID');
+      return View::make('landrates', [ 'land'=> $land ]);
+    }
+
+    public function fetchEstateHouses() {
+      //dd(Input::all());
+      $rules = ['ServiceID'=>"required|exists:Services,ServiceID"];
+      $valid = Validator::make(Input::all(),$rules);
+      if ($valid->fails()){
+        $response =['code'=>404,'message'=>'Estate not found'];
+      }else{
+        $id = Input::get('ServiceID');
+        $houses = House::select(['HouseID','HouseNo'])->FromEstate($id)->get();#->toJson();
+        $response =['code'=>200,'message'=>'Estate found','houses'=>$houses];
+      }
+
+
+      return Response::json($response);
     }
 
     public function getApplyForm() {

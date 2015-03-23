@@ -96,7 +96,7 @@
                       <div class="form-group">
                           <label>Telephone (Line 2)</label>
                           <div class="input-control text">
-                              <input class="form-control" type="text" name="Telephone2" value="{{Input::old('Telephone2')}}" required="">
+                              <input class="form-control" type="text" name="Telephone2" value="{{Input::old('Telephone2')}}" >
                           </div>
                       </div>
                       <div class="form-group">
@@ -108,7 +108,7 @@
                       <div class="form-group">
                           <label>Mobile (Line 2)</label>
                           <div class="input-control text">
-                              <input class="form-control" type="text" name="Mobile2" value="{{Input::old('Mobile2')}}" required="">
+                              <input class="form-control" type="text" name="Mobile2" value="{{Input::old('Mobile2')}}">
                           </div>
                       </div>
                       <div class="form-group">
@@ -120,7 +120,7 @@
                       <div class="form-group">
                           <label>Website (URL)</label>
                           <div class="input-control text">
-                              <input class="form-control" type="text" name="Url" value="{{Input::old('Url')}}" required="">
+                              <input class="form-control" type="text" name="Url" value="{{Input::old('Url')}}">
                           </div>
                       </div>
 

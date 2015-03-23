@@ -58,14 +58,15 @@ class Api {
 
     public static function upload($file,$params = array())
     {
-        $extension = $file->getClientOriginalExtension();
-        $name = Auth::id().'-'.Api::clean($params['name']).'.'.$extension;
-        if ($file->move(public_path().$params['path'], $name)){
-            return $params['path'].'/'.$name;
+        if(isset($file)){
+          $extension = $file->getClientOriginalExtension();
+          $name = Auth::id().'-'.Api::clean($params['name']).'.'.$extension;
+          if ($file->move(public_path().$params['path'], $name)){
+              return $params['path'].'/'.$name;
+          }
+
+          return false;
         }
-
-        return false;
-
     }
 
     /**
@@ -213,9 +214,14 @@ class Api {
 
     }
 
-    public static function showLogo($class,$height,$width)
+    public static function showLogo($class=null,$height=100,$width=100)
     {
         return '<img class="'.$class.'" src="'.asset('images/ug-logo.png').'" height="'.$height.'" width="'.$width.'" />';
+    }
+
+    public static function stampPaid($class=null,$height = 100,$width=100)
+    {
+        return '<img class="'.$class.'" src="'.asset('images/stamp-paid.png').'" height="'.$height.'" width="'.$width.'" />';
     }
 
 

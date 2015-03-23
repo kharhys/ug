@@ -2,7 +2,7 @@
 
 @section('content')
 
-		<form class="form-horizontal" role="form" method="POST" action="/register">
+		<form class="form-horizontal" role="form" method="POST" action="{{route('post.register')}}">
 			<h1 class="text-center">User Account</h1>
 			<input type="hidden" name="_token" value="{{ csrf_token() }}">
 			<div class="row">

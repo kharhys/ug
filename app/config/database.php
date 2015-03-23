@@ -76,7 +76,7 @@ return array(
 
 		'sql' => array(
 			'driver'   => 'sqlsrv',
-			'host'     => 'ATTAINSVR4\SQL2014',
+			'host'     => 'oscar-pc\SQLEXPRESS',
 			'database' => 'COUNTYREVENUE',
 			'username' => 'sa',
 			'password' => 'system',
