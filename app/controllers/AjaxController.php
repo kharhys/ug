@@ -48,6 +48,18 @@ class AjaxController extends BaseController {
 
     public function getApplications()
     {
+      $data = DB::table('ServiceHeader')
+        ->select(['ServiceHeader.ServiceHeaderID as ID',
+              'Customer.CustomerName',
+              'Services.ServiceName',
+              'ServiceHeader.CreatedDate as Date',
+              'ServiceStatus.ServiceStatusDisplay'])
+        ->where('ServiceHeader.CustomerID', Auth::user()->CustomerProfileID)
+        ->join('Customer','Customer.CustomerID','=','ServiceHeader.CustomerID')
+        ->join('Services','Services.ServiceID','=','ServiceHeader.ServiceID')
+        ->join('ServiceStatus','ServiceStatus.ServiceStatusID','=','ServiceHeader.ServiceStatusID');
+      /*->get();
+        dd($data);
         $apps = Application::select([
             'ServiceHeader.ServiceHeaderID as ID',
             'Customer.CustomerName',
@@ -55,12 +67,12 @@ class AjaxController extends BaseController {
             'ServiceHeader.CreatedDate as Date',
             'ServiceStatus.ServiceStatusDisplay as Status'
         ])
-            ->where('Customer.CustomerProfileID',Auth::user()->CustomerProfileID)
+            //->where('Customer.CustomerProfileID',Auth::user()->CustomerProfileID)
             ->join('Customer','Customer.CustomerID','=','ServiceHeader.CustomerID')
             ->join('Services','Services.ServiceID','=','ServiceHeader.ServiceID')
             ->join('ServiceStatus','ServiceStatus.ServiceStatusID','=','ServiceHeader.ServiceStatusID');
-        
-        return Datatables::of($apps)
+            */
+        return Datatables::of($data)
             ->remove_column('ID')
             //->add_column('view','<a href="{{route(\'view.biz\',$ID)}}" >Show</a>')
             ->add_column('view','<a href="./uploads/9-Registration-Certificate.pdf" >Show</a>')

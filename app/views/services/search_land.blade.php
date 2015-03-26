@@ -12,10 +12,16 @@
       <br/>
       @if($due)
         Land Rates Balance Due: KSh. {{$due}}
-
+      @endif
+      @if($inv)
         <div>
           <br/>
-          <a href="{{route('my.invoice', $inv)}}"><button class="warning">Request Invoice </button></a>
+          <a href="{{ URL::route('my.invoice', $inv) }}"><button class="warning"> </button></a>
+        </div>
+      @else
+        <div class="alert alert-danger">
+          <br/>
+          You have not been issued with an invoice
         </div>
       @endif
       <br/>

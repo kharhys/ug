@@ -41,3 +41,27 @@
             <button type="submit" class="button primary">Submit</button>
         </div>
 </form>
+
+@section('page_js')
+<script>
+  $("[name='ColumnID[120]']").change(function(){
+    var id = $(this).val();
+    console.log(id);
+    getWards(id);
+  });
+
+  function getWards(id)
+  {
+    $.post('{{route('get.wards')}}',{SubCountyID: id},function(data){
+      //console.log(id, data);
+      var toAppend = '';
+        if (data.code == 200){
+          $.each(data.wards,function(i,o){
+           toAppend += '<option value="'+o.WardID+'">'+o.WardName+'</option>';
+         });
+        }
+        $("[name='ColumnID[8]']").html(toAppend);
+    });
+  }
+</script>
+@endsection

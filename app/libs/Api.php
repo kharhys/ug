@@ -150,8 +150,12 @@ class Api {
             //create an array index of values
             $values[] = [$list[0]=>$list[1]];
         }
-
-        return ($values);
+        $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($values));
+        $vals = [];
+        foreach($it as $v) {
+          array_push($vals, $v);
+        }
+        return ($vals);
     }
     public  static function CreateFormField($columnId)
     {

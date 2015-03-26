@@ -37,6 +37,8 @@ class ServicesController extends BaseController{
 
         $land = find($lrnqs);
 
+        //dd(Auth::id());
+
         return View::make('services.search_land', ['land' => $land, 'owner' => $land['owner'], 'due' => $land['due'], 'inv' => $land['invoice'] ]);
     }
 
@@ -67,14 +69,31 @@ class ServicesController extends BaseController{
     public function getHouserent() {
       $estates = Service::where('ServiceCategoryID', 50)->lists('ServiceName','ServiceID');
       //dd($estates);
-      //$estates = Estate::lists('EstateName');
       $houses = House::where('ServiceID', 389)->lists('HouseNo','HouseID');
       return View::make('houserent',['estates'=> $estates, 'houses' => $houses ]);
     }
 
+    public function getStalls() {
+      $estates = Service::where('ServiceCategoryID', 80)->lists('ServiceName','ServiceID');
+      //dd($estates);
+      $stalls = House::where('HouseTypeID', 5)->lists('HouseNo','HouseID');
+      return View::make('stalls',['estates'=> $estates, 'stalls' => $stalls ]);
+    }
+
     public function getLandRates() {
+
       $land = House::where('ServiceID', 389)->lists('HouseNo','HouseID');
       return View::make('landrates', [ 'land'=> $land ]);
+    }
+
+    public function update() {
+      $base = 1543;
+      for($x = 14; $x < 75; $x++) {
+        $data = House::where('EstateID', $x)->update(['ServiceID' => $base]);
+        $base = $base + 1;
+      }
+
+      //dd($data);
     }
 
     public function fetchEstateHouses() {
@@ -87,6 +106,38 @@ class ServicesController extends BaseController{
         $id = Input::get('ServiceID');
         $houses = House::select(['HouseID','HouseNo'])->FromEstate($id)->get();#->toJson();
         $response =['code'=>200,'message'=>'Estate found','houses'=>$houses];
+      }
+
+
+      return Response::json($response);
+    }
+
+    public function fetchStalls() {
+      //dd(Input::all());
+      $rules = ['ServiceID'=>"required|exists:Services,ServiceID"];
+      $valid = Validator::make(Input::all(),$rules);
+      if ($valid->fails()){
+        $response =['code'=>404,'message'=>'Estate not found'];
+      }else{
+        $id = Input::get('ServiceID');
+        $stalls = House::where('ServiceID', $id)->FromEstate($id)->get();#->toJson();
+        $response =['code'=>200,'message'=>'Estate found','stalls'=>$stalls];
+      }
+
+
+      return Response::json($response);
+    }
+
+    public function fetchWards() {
+      //dd(Input::all());
+      $rules = ['SubCountyID'=>"required|exists:SubCounty,SubCountyID"];
+      $valid = Validator::make(Input::all(),$rules);
+      if ($valid->fails()){
+        $response =['code'=>404,'message'=>'Estate not found'];
+      }else{
+        $id = Input::get('SubCountyID');
+        $wards = Ward::where('SubCountyID' ,$id)->get(['WardName','WardID']);#->toJson();
+        $response =['code'=>200,'message'=>'Estate found','wards'=> $wards];
       }
 
 
@@ -112,17 +163,88 @@ class ServicesController extends BaseController{
     }
 
     public function postApplyForm() {
-        #$input = Input::all();
-        #return Response::json($input);
+        $input = Input::all();
+        //return Response::json($input);
+        //dd(Input::get('form'));
+        if(Input::get('form') == 2) {
+          $rules = [
+              'form'=>'required:exits:Form,FormID',
+              'ServiceNo'=>'required|exists:Services,ServiceID',
+              'CustomerID'=>'required|exists:Customer,CustomerID',
+              'ColumnID.1' => 'required|string',
+              'ColumnID.2' => 'required|numeric',
+              'ColumnID.3' => 'required|numeric',
+              'ColumnID.4' => 'required|string',
+              'ColumnID.123' => 'required|string',
+              'ColumnID.132' => 'required|email',
+              'ColumnID.117' => 'required|numeric',
+              'ColumnID.117' => 'required|numeric'
+          ];
+          $msgs = [
+            'ColumnID.1.required' => 'Business Activity Description is required.',
+            'ColumnID.1.string' => 'Business Activity Description may only contain letters.',
+            'ColumnID.2.required' => 'Business Premise Area (Square Meters) is required.',
+            'ColumnID.2.numeric' => 'Business Premise Area (Square Meters) may only contain numeric digits.',
+            'ColumnID.3.required' => 'No. of Employees is required.',
+            'ColumnID.3.numeric' => 'No. of Employees may only contain numeric digits.',
+            'ColumnID.4.required' => 'Other Business Clarification Details are required.',
+            'ColumnID.4.string' => 'Other Business Clarification Details may only contain letters.',
+            'ColumnID.123.required' => 'Nearest Road is required.',
+            'ColumnID.123.string' => 'Nearest Road may only contain letters.',
+            'ColumnID.132.required' => 'Email is required.',
+            'ColumnID.132.email' => 'Email must be a valid email address.',
+            'ColumnID.133.url' => 'Website must be a valid url.',
+            'ColumnID.129.required' => 'Postal Address is required.',
+            'ColumnID.129.numeric' => 'Postal Address may only contain numeric digits.',
+            'ColumnID.117.required' => 'ID/Passport Number is required.',
+            'ColumnID.117.numeric' => 'ID/Passport Number may only contain numeric digits.',
+          ];
+          $valid = Validator::make(Input::all(),$rules, $msgs);
+          if ($valid->fails()){
+              return Redirect::back()
+                  ->withErrors($valid);
+              //dd($input);
+              //return Redirect::route('list.departments');
+          }
+        }
 
-        $rules = [
-            'form'=>'required:exits:Form,FormID',
-            'ServiceNo'=>'required|exists:Services,ServiceID',
-            'CustomerID'=>'required|exists:Customer,CustomerID'
-        ];
-        $valid = Validator::make(Input::all(),$rules);
-        if ($valid->fails()){
-            return Redirect::route('list.departments');
+        if(Input::get('form') == 5) {
+          $rules = [
+              'form'=>'required:exits:Form,FormID',
+              'house'=>'required:exits:House,HouseID',
+              'ServiceNo'=>'required|exists:Services,ServiceID',
+              'CustomerID'=>'required|exists:Customer,CustomerID',
+              'ColumnID.44' => 'required|string',
+              'ColumnID.45' => 'required|string',
+              'ColumnID.46' => 'required|string',
+              'ColumnID.47' => 'required|string',
+              'ColumnID.48' => 'required|numeric',
+              'ColumnID.50' => 'required|string',
+              'ColumnID.51' => 'required|numeric'
+          ];
+          $msgs = [
+            'ColumnID.44.required' => 'What is your Occupation now? is required.',
+            'ColumnID.44.string' => 'What is your Occupation now? may only contain letters.',
+            'ColumnID.45.required' => 'Who is your employer? is required.',
+            'ColumnID.45.string' => 'Who is your employer? may only contain letters.',
+            'ColumnID.46.required' => 'If employed what is your designation? is required.',
+            'ColumnID.46.string' => 'If employed what is your designation? may only contain letters.',
+            'ColumnID.47.required' => 'Where is your Accomodation Now? is required.',
+            'ColumnID.47.string' => 'Where is your Accomodation Now? may only contain letters.',
+            'ColumnID.48.required' => 'What rent are you paying per Month is required.',
+            'ColumnID.48.numeric' => 'What rent are you paying per Month may only contain numeric digits.',
+            'ColumnID.50.required' => 'Who is to pay Rent? is required.',
+            'ColumnID.50.string' => 'Who is to pay Rent? may only contain letters.',
+            'ColumnID.51.required' => 'How long have you lived in Uasin Gishu county? is required.',
+            'ColumnID.51.numeric' => 'How long have you lived in Uasin Gishu county? may only contain numeric digits.'
+          ];
+          $valid = Validator::make(Input::all(),$rules, $msgs);
+          if ($valid->fails()){
+              return Redirect::back()
+                  ->withErrors($valid);
+              //dd($input);
+              //return Redirect::route('list.departments');
+          }
         }
 
         $app = new Application();

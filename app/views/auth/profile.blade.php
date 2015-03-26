@@ -34,7 +34,7 @@
                 </tr>
                 <tr>
                     <td>IDNumber</td>
-                    <td>{{$entity->IDNumber}}</td>
+                    <td>{{$entity->IdNumber}}</td>
                 </tr>
                 <tr>
                     <td>Phone Number</td>

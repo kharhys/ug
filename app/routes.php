@@ -48,6 +48,8 @@ Route::group(['before'=>'auth'],function(){
 		Route::get('{id}/list',['as'=>'list.services','uses'=>'ServicesController@getServices']);
 		Route::get('apply',['as'=>'get.apply.service','uses'=>'ServicesController@getApplyForm']);
 		Route::get('houserent',['as'=>'get.houserent','uses'=>'ServicesController@getHouserent']);
+		Route::get('stalls',['as'=>'get.stalls','uses'=>'ServicesController@getStalls']);
+		Route::post('stalls',['as'=>'fetch.stalls','uses'=>'ServicesController@fetchStalls']);
 		Route::get('landrates',['as'=>'get.landrates','uses'=>'ServicesController@getLandrates']);
 		Route::post('apply',['as'=>'post.apply.service','uses'=>'ServicesController@postApplyForm']);
 		Route::post('search_land',['as'=>'search.land','uses'=>'ServicesController@searchLand']);
@@ -64,6 +66,11 @@ Route::group(['before'=>'auth'],function(){
 		Route::get('{id}/invoice',['as'=>'my.invoice','uses'=>'HomeController@showInvoice']);
 	});
 
+	Route::group(['prefix'=>'land'],function(){
+		Route::get('registration',['as'=>'land.register','uses'=>'LandController@register']);
+		Route::post('registration',['as'=>'land.submit.registration','uses'=>'LandController@submitRegistration']);
+	});
+
 
 	//ajax table actions
 	Route::group(['prefix'=>'api'],function()
@@ -71,9 +78,11 @@ Route::group(['before'=>'auth'],function(){
 		Route::get('users',['as'=>'list.users.ajax','uses'=>'AjaxController@getUsers']);
 		Route::get('biz',['as'=>'list.businesses.ajax','uses'=>'AjaxController@getBusinesses']);
 		Route::get('apps',['as'=>'list.applications.ajax','uses'=>'AjaxController@getApplications']);
-		Route::get('apps',['as'=>'list.approved_applications.ajax','uses'=>'AjaxController@approvedApplications']);
+		Route::get('current',['as'=>'list.approved_applications.ajax','uses'=>'AjaxController@approvedApplications']);
 		Route::get('bills',['as'=>'list.bills.ajax','uses'=>'AjaxController@getInvoices']);
 		Route::get('invoice/{id}/pay',['as'=>'pay.invoice','uses'=>'PaymentController@getPaymentStatus']);
 		Route::any('estate/house',['as'=>'get.houses','uses'=>'ServicesController@fetchEstateHouses']);
+		Route::any('subcounty/wards',['as'=>'get.wards','uses'=>'ServicesController@fetchWards']);
+		Route::any('',['as'=>'update','uses'=>'ServicesController@update']);
 	});
 });

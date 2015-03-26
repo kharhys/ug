@@ -11,9 +11,12 @@ class BusinessController extends BaseController{
     public function getAddBusiness()
     {
         $types = BusinessType::all()->lists('BusinessTypeName','BusinessTypeID');
-        $counties = County::all()->lists('CountyName','CountyID');
+        $wards = Ward::all()->lists('WardName','WardID');
+        $zones = BusinessZone::all()->lists('ZoneName','ZoneID');
+        $codes = DB::table('PostalCodes')->get();
+        $subcounties = SubCounty::all()->lists('SubCountyName','SubCountyID');
 
-        return View::make('business.new',['types'=>$types,'counties'=>$counties]);
+        return View::make('business.new',['types'=>$types,'counties'=>$subcounties, 'wards' => $wards, 'zones' => $zones, 'codes' => $codes]);
     }
 
     public function postAddBusiness()
@@ -21,19 +24,20 @@ class BusinessController extends BaseController{
         $profile = Auth::user()->CustomerProfileID;
         $rules = array(
             'CustomerName'=>'required|min:4',
-            'ContactPerson'=>'required',
-            'Designation'=>'required',
+            'ContactPerson'=>'required|string',
+            'Designation'=>'required|string',
             'RegistrationNumber'=>'required',
-            'PIN'=>'required',
-            'VATNumber'=>'required',
-            'BusinessTypeID'=>'required|exists:BusinessType',
-            'PostalAddress'=>'required',
-            'PostalCode'=>'required',
-            'Town'=>'required',
+            'PIN'=>'required|numeric',
+            'VATNumber'=>'required|numeric',
+            'PostalAddress'=>'required|numeric',
+            'PostalCode'=>'required|string',
             'CountyID'=>'required|exists:CountyDetails',
-            'Mobile1'=>'required',
-            'Telephone1'=>'required',
-            'Email' => 'email'
+            'Mobile1'=>'required|digits:10',
+            'Telephone1'=>'required|numeric',
+            'Mobile2'=>'digits:10',
+            'Telephone2'=>'numeric',
+            'Email' => 'email',
+            'Url' => 'url'
         );
         $valid = Validator::make(Input::all(),$rules);
 
@@ -47,7 +51,6 @@ class BusinessController extends BaseController{
             $biz->RegistrationNumber = $input['RegistrationNumber'];
             $biz->PIN = $input['PIN'];
             $biz->VATNumber = $input['VATNumber'];
-            $biz->BusinessTypeID = $input['BusinessTypeID'];
             $biz->PostalAddress = $input['PostalAddress'];
             $biz->PostalCode = $input['PostalCode'];
             $biz->Town = $input['Town'];

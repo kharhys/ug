@@ -1,6 +1,9 @@
 <?php
 
+use BotDetectCaptcha\LaravelCaptcha\BotDetectLaravelCaptcha;
+
 class UsersController extends \BaseController {
+
     /**
      * @return mixed
      * Show user login form
@@ -38,6 +41,12 @@ class UsersController extends \BaseController {
 
             if (Auth::attempt($credentials)){
                 $user =  User::find(Auth::user()->UserProfileID);
+
+                //dd($user);
+                if($user->Active == false) {
+                  Session::flash('error_msg','Account not activated');
+                  return Redirect::to('login');
+                }
                 if ($user->ChangePassword){
                     Session::put('user__',$user->Email);
 
@@ -151,7 +160,8 @@ class UsersController extends \BaseController {
      * Show user registration form
      */
     public function getRegistrationForm(){
-        return View::make('auth.register');
+
+      return View::make('auth.register');
     }
 
 
@@ -161,16 +171,55 @@ class UsersController extends \BaseController {
      * Register user process
      */
     public function postRegister(){
-        #var_dump(Input::all());die();
+        $code = Input::get('CaptchaCode');
         $rules = array(
-            'FirstName' => 'required|max:255',
-            'MiddleName' => 'required|max:255',
-            'LastName' => 'required|max:255',
-            'Mobile' => 'required|max:15',
-            'IDNumber' => 'required|max:12',
+            'FirstName' => 'required|alpha|max:255',
+            'MiddleName' => 'required|alpha|max:255',
+            'LastName' => 'required|alpha|max:255',
+            'Mobile' => 'required|numeric',
+            'IDNumber' => 'required|numeric',
             'email' => 'required|email|max:255|unique:UserProfile',
+            'email_confirmation' => 'same:email',
             'password' => 'required|confirmed|min:6',
+            'UHN' => 'exists:Houses,UHN',
+            'UPN' => 'exists:Property,UPN',
+            'SBPNumber' => 'exists:Permits,SBPNumber'
         );
+
+        function make($cid) {
+          function customize($id){
+            $name = Input::get('FirstName').' '.Input::get('MiddleName').' '.Input::get('LastName');
+            $record = [
+              'CustomerName' => $name, 'ContactPerson' => $name, 'IDNO' => Input::get('IDNumber'),
+              'Mobile1' => Input::get('Mobile'), 'Email' => Input::get('Email')
+            ];
+            Customer::where('CustomerSupplierID',$id)->update($record);
+          }
+
+          if(Input::get('UHN')) {
+            //update house tenant in customers table
+            $csid = DB::table('HouseTenancy')->where('UHN',Input::get('UHN'))->pluck('CustomerSupplierID');
+            customize($csid);
+          } elseif(Input::get('UPN')) {
+            //update land tenant in customers table
+            $csid = DB::table('Property')->where('UPN', Input::get('UPN'))->pluck('CustomerSupplierID');
+            customize($csid);
+          } elseif(Input::get('SBPNumber')) {
+            //update licensed business in customers table
+            $csid = DB::table('Permits')->where('SBPNumber', Input::get('SBPNumber'))->pluck('CustomerSupplierID');
+            customize($csid);
+          } else {
+            //update new customer in customers table
+            $cust = new Customer();
+            $cust->CreatedBy = 1;
+            $cust->CustomerTypeID = 1;
+            $cust->CustomerName = Input::get('FirstName');
+            $cust->CustomerProfileID = $cid;
+
+            $cust->save();
+            customize($cust->id());
+          }
+        }
 
         $v = Validator::make(Input::all(),$rules);
 
@@ -194,6 +243,9 @@ class UsersController extends \BaseController {
                 'Active'=>0,
                 'ChangePassword'=>0
             );
+
+            //create customer account before user account
+            make($id);
 
             if ($this->register($creds)){
                 $me = Api::FindUserBy('Email',$creds['Email']);
@@ -270,6 +322,7 @@ class UsersController extends \BaseController {
                 'ChangePassword'=>1
 
             );
+
 
             if ($this->register($creds)){
                 $data['FirstName'] = $creds['FirstName'];

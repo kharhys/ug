@@ -21,22 +21,15 @@
                               <input class="form-control" type="text" name="RegistrationNumber" value="{{Input::old('RegistrationNumber')}}" required="">
                           </div>
                       </div>
-                      <div class="form-group">
-                          <label>VAT No.</label>
-                          <div class="input-control text">
-                              <input class="form-control" type="text" name="VATNumber" value="{{Input::old('VATNumber')}}" required="">
-                          </div>
-                      </div>
 
 
                   </div>
 
                   <div class="span5">
-
                       <div class="form-group">
-                          <label>Business Type</label>
-                          <div class="input-control select">
-                              {{ Form::select('BusinessTypeID', $types, Input::old('BusinessTypeID'), array('class' => 'form-control')) }}
+                          <label>VAT No.</label>
+                          <div class="input-control text">
+                              <input class="form-control" type="text" name="VATNumber" value="{{Input::old('VATNumber')}}" required="">
                           </div>
                       </div>
                       <div class="form-group">
@@ -66,32 +59,40 @@
                       <div class="form-group">
                           <label>Postal Code</label>
                           <div class="input-control text">
-                              <input class="form-control" type="text" name="PostalCode" value="{{Input::old('PostalCode')}}" required="">
+                              <select name="PostalCode">
+                                @foreach($codes as $code)
+                                  <option value="{{$code->PostalCodeName}}">{{$code->PostalCodeName}}</option>
+                                @endforeach
+                              </select>
                           </div>
                       </div>
                       <div class="form-group">
-                          <label>Town</label>
-                          <div class="input-control text">
-                              <input class="form-control" type="text" name="Town" value="{{Input::old('Town')}}" required="">
-                          </div>
-                      </div>
-                      <div class="form-group">
-                          <label>County</label>
+                          <label>Sub County</label>
                           <div class="input-control select">
-                              {{ Form::select('CountyID', $counties, Input::old('CountyID'), array('class' => 'form-control')) }}
+                              {{ Form::select('CountyID', $counties, Input::old('CountyID'), array('class' => 'form-control', 'id' => 'subcounty')) }}
                           </div>
                       </div>
+                      <div class="form-group">
+                          <label>Ward</label>
+                          <div class="input-control select">
+                              {{ Form::select('WardID', $wards, Input::old('WardID'), array('class' => 'form-control', 'id' => 'ward')) }}
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label>Business Zone</label>
+                          <div class="input-control select">
+                              {{ Form::select('ZoneID', $zones, Input::old('ZoneID'), array('class' => 'form-control', 'id' => 'zone')) }}
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="span5">
                       <div class="form-group">
                           <label>Telephone (Line 1)</label>
                           <div class="input-control text">
                               <input class="form-control" type="text" name="Telephone1" value="{{Input::old('Telephone1')}}" required="">
                           </div>
                       </div>
-
-
-                  </div>
-
-                  <div class="span5">
 
                       <div class="form-group">
                           <label>Telephone (Line 2)</label>
@@ -166,4 +167,25 @@
 @endsection
 
 @section('page_js')
+<script>
+  $('#subcounty').change(function(){
+    var id = $(this).val();
+    console.log(id);
+    getWards(id);
+  });
+
+  function getWards(id)
+  {
+    $.post('{{route('get.wards')}}',{SubCountyID: id},function(data){
+      //console.log(id, data);
+      var toAppend = '';
+        if (data.code == 200){
+          $.each(data.wards,function(i,o){
+           toAppend += '<option value="'+o.WardID+'">'+o.WardName+'</option>';
+         });
+        }
+        $('#ward').html(toAppend);
+    });
+  }
+</script>
 @endsection

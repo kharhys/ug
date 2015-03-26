@@ -28,6 +28,7 @@ class FormSection extends Model{
     public function columns()
     {
         return FormColumns::where('FormSectionID',$this->id())
+            ->orderBy('Priority', 'ASC')
             ->where('FormID',$this->FormID)
             ->get();
     }

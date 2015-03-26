@@ -122,10 +122,11 @@ return array(
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		'Former\FormerServiceProvider',
-		'Webpatser\Countries\CountriesServiceProvider',
+		#'Webpatser\Countries\CountriesServiceProvider',
 		'Bllim\Datatables\DatatablesServiceProvider',
 		'Rasim\Config\ConfigWriterServiceProvider',
 		#'Chumper\Datatable\DatatableServiceProvider',
+		'Anhskohbo\NoCaptcha\NoCaptchaServiceProvider'
 
 	),
 
@@ -194,9 +195,8 @@ return array(
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
 		'Former'		 => 'Former\Facades\Former',
-		'Countries' 	=> 'Webpatser\Countries\CountriesFacade',
-		'Datatables'      => 'Bllim\Datatables\Facade\Datatables',
-		#'Datatable' => 'Chumper\Datatable\Facades\DatatableFacade',
+		#'Countries' 	=> 'Webpatser\Countries\CountriesFacade',
+		'Datatables'      => 'Bllim\Datatables\Facade\Datatables'
 
 	),
 

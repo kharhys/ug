@@ -1,0 +1,16 @@
+benson@benson-HP-630-Notebook-PC:~$ sudo chmod +x xampp-linux-x64-5.6.3-0-installer.run
+[sudo] password for benson: 
+chmod: cannot access ‘xampp-linux-x64-5.6.3-0-installer.run’: No such file or directory
+benson@benson-HP-630-Notebook-PC:~$ cd..
+cd..: command not found
+benson@benson-HP-630-Notebook-PC:~$ cd 
+benson@benson-HP-630-Notebook-PC:~$ cd  
+benson@benson-HP-630-Notebook-PC:~$ cd Home
+bash: cd: Home: No such file or directory
+benson@benson-HP-630-Notebook-PC:~$ cd Downloads
+benson@benson-HP-630-Notebook-PC:~/Downloads$ sudo chmod +x xampp-linux-x64-5.6.3-0-installer.run
+[sudo] password for benson: 
+benson@benson-HP-630-Notebook-PC:~/Downloads$ sudo ./xampp-linux-x64-5.6.3-0-installer.run
+^Cbenson@benson-HP-630-Notebook-PC:~/Downloads$ 
+
+

@@ -5,7 +5,7 @@
 <form id="houserent" action="{{route('search.housing')}}" method="post" enctype="multipart/form-data">
 
   <fieldset>
-    <legend>Pay Or Apply For a House</legend>
+    <legend>Pay Or Apply For a Stall</legend>
     <div>
       <label for="house">Select Estate</label>
       {{Form::select('estate',$estates,Input::old('estate'),['class'=>'input-control','id'=>'pay'])}}
@@ -13,14 +13,13 @@
     <br/>
 
     <div>
-      <label for="house">Select House</label>
+      <label for="house">Select Stall</label>
       <select name="house" form="houserent" id="payhse">
-        @foreach($houses as $house)
-          <option value="{{$house}}">{{$house}}</option>
+        @foreach($stalls as $stall)
+          <option value="{{$stall}}">{{$stall}}</option>
         @endforeach
       </select>
     </div>
-    
 
     <br/>
     <div>
@@ -40,31 +39,19 @@
     update(id);
   });
 
-  $('#apply').change(function(){
-    var id = $(this).val();
-    update(id);
-  });
-
-  $(document).ready(function(){
-    var id = $('#pay').val();
-    getHouses(id);
-    update(id);
-  });
-
-
   function update(id){
-    var link = "apply?form=5&ServiceNo=" + id + "&" ;
+    var link = "apply?form=5&ServiceNo=" + id;
     $('#applyhref').attr('href', link);
-    getHouses(id);
+    getstalls(id);
   }
 
-  function getHouses(id)
+  function getstalls(id)
   {
-    $.post('{{route('get.houses')}}',{ServiceID: id},function(data){
+    $.post('{{route('fetch.stalls')}}',{ServiceID: id},function(data){
       console.log(id, data);
       var toAppend = '';
         if (data.code == 200){
-          $.each(data.houses,function(i,o){
+          $.each(data.stalls,function(i,o){
            toAppend += '<option value="'+o.HouseID+'">'+o.HouseNo+'</option>';
          });
         }

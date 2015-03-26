@@ -3,6 +3,11 @@ body {
   margin: 0;
   padding: 0;
 }
+
+#CaptchaCode {
+  height: 2em;
+  margin-top: 8px;
+}
 .metro .page {
   width: 980px;
   margin: 0 auto;
