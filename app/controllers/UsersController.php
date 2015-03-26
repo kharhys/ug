@@ -43,10 +43,10 @@ class UsersController extends \BaseController {
                 $user =  User::find(Auth::user()->UserProfileID);
 
                 //dd($user);
-                if($user->Active == false) {
-                  Session::flash('error_msg','Account not activated');
-                  return Redirect::to('login');
-                }
+                //if($user->Active == false) {
+                //  Session::flash('error_msg','Account not activated');
+                //  return Redirect::to('login');
+                //}
                 if ($user->ChangePassword){
                     Session::put('user__',$user->Email);
 
@@ -186,7 +186,8 @@ class UsersController extends \BaseController {
             'SBPNumber' => 'exists:Permits,SBPNumber'
         );
 
-        function make($cid) {
+        //create or update customer profile
+        function createOrUpdate() {
           function customize($id){
             $name = Input::get('FirstName').' '.Input::get('MiddleName').' '.Input::get('LastName');
             $record = [
@@ -194,27 +195,29 @@ class UsersController extends \BaseController {
               'Mobile1' => Input::get('Mobile'), 'Email' => Input::get('Email')
             ];
             Customer::where('CustomerSupplierID',$id)->update($record);
+            $pid = Customer::where('CustomerSupplierID',$id)->pluck('CustomerProfileID');
+            return $pid;
           }
 
           if(Input::get('UHN')) {
             //update house tenant in customers table
             $csid = DB::table('HouseTenancy')->where('UHN',Input::get('UHN'))->pluck('CustomerSupplierID');
-            customize($csid);
+            return customize($csid);
           } elseif(Input::get('UPN')) {
             //update land tenant in customers table
             $csid = DB::table('Property')->where('UPN', Input::get('UPN'))->pluck('CustomerSupplierID');
-            customize($csid);
+            return customize($csid);
           } elseif(Input::get('SBPNumber')) {
             //update licensed business in customers table
             $csid = DB::table('Permits')->where('SBPNumber', Input::get('SBPNumber'))->pluck('CustomerSupplierID');
-            customize($csid);
+            return customize($csid);
           } else {
             //update new customer in customers table
             $cust = new Customer();
             $cust->CreatedBy = 1;
             $cust->CustomerTypeID = 1;
             $cust->CustomerName = Input::get('FirstName');
-            $cust->CustomerProfileID = $cid;
+            $cust->CustomerProfileID = Api::CustomerProfileID($params); #create profile
 
             $cust->save();
             customize($cust->id());
@@ -228,8 +231,10 @@ class UsersController extends \BaseController {
             $data['email']=Input::get('email');
             $input = Input::all();
             $params = ['CreatedBy'=>0,'status'=>1];
-            $id = Api::CustomerProfileID($params);
+            #$id = Api::CustomerProfileID($params);
             #dd($id);
+            //create or update customer account before creating user account
+            $id = createOrUpdate();
             $creds = array(
                 'FirstName' => $input['FirstName'],
                 'MiddleName' =>$input['MiddleName'],
@@ -243,10 +248,6 @@ class UsersController extends \BaseController {
                 'Active'=>0,
                 'ChangePassword'=>0
             );
-
-            //create customer account before user account
-            make($id);
-
             if ($this->register($creds)){
                 $me = Api::FindUserBy('Email',$creds['Email']);
                 $pro = CustomerProfile::findOrFail($id);

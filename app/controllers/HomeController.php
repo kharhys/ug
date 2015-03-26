@@ -82,7 +82,7 @@ class HomeController extends BaseController {
 
 	public function showInvoice($id)
 	{
-		dd($id);
+		//dd($id);
 		$invoice = Invoice::findOrFail($id);
 
 		return View::make('services.invoice',['invoice'=>$invoice]);
