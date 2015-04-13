@@ -23,6 +23,7 @@ class Api {
             $profile->CustomerProfileStatusID = $status->id();
 
             $profile->save();
+            #dd($profile);
 
             return $profile->id();
         }
@@ -136,6 +137,15 @@ class Api {
         ";
     }
 
+    public static function FieldTemplate($label,$columnWidth,$fieldClass,$field){
+        echo  "
+            <div class='field'>
+                <label>$label</label>
+                $field
+            </div>
+        ";
+    }
+
     public static function ResultArray($query)
     {
         $result = DB::select($query);
@@ -150,11 +160,15 @@ class Api {
             //create an array index of values
             $values[] = [$list[0]=>$list[1]];
         }
-        $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($values));
+        //$it = new RecursiveIteratorIterator(new RecursiveArrayIterator($values));
         $vals = [];
-        foreach($it as $v) {
-          array_push($vals, $v);
+        foreach($values as $v) {
+          //array_push($vals, $v);
+          foreach($v as $key => $val) {
+            $vals[$key] = $val;
+          }
         }
+
         return ($vals);
     }
     public  static function CreateFormField($columnId)
@@ -164,33 +178,33 @@ class Api {
 
         switch ($dataType){
             case "Text":
-                $field = Form::text("ColumnID[".$col->id()."]",Input::old($col->id()),['class'=>'form-control']);
+                $field = Form::text("ColumnID[".$col->id()."]",Input::old($col->id()),['class'=>'form-control', 'id' => $col->id()]);
                 $label = $col;
                 $width = $col->ColumnSize;
                 $class = 'text';
                 break;
             case "Number":
-                $field = Form::number("ColumnID[".$col->id()."]",Input::old($col->id()),['class'=>'form-control']);
+                $field = Form::number("ColumnID[".$col->id()."]",Input::old($col->id()),['class'=>'form-control', 'id' => $col->id()]);
                 $label = $col;
                 $width = $col->ColumnSize;
                 $class = 'number';
                 break;
             case 'Option':
                 $values = Api::ResultArray($col->Notes);
-                $field = Form::select("ColumnID[".$col->id()."]",$values,Input::old($col->id()),['class'=>'form-control']);
+                $field = Form::select("ColumnID[".$col->id()."]",$values,Input::old($col->id()),['class'=>'form-control', 'id' => $col->id()]);
                 $label = $col;
                 $width = $col->ColumnSize;
                 $class = 'select';
                 break;
             case 'OptionCommaSeparated':
                 $values = explode(',',$col->Notes);
-                $field = Form::select("ColumnID[".$col->id()."]",$values,Input::old($col->id()),['class'=>'form-control']);
+                $field = Form::select("ColumnID[".$col->id()."]",$values,Input::old($col->id()),['class'=>'form-control', 'id' => $col->id()]);
                 $label = $col;
                 $width = $col->ColumnSize;
                 $class = 'select';
                 break;
             default:
-                $field = Form::text("ColumnID[".$col->id()."]",Input::old($col->id()),['class'=>'form-control']);
+                $field = Form::text("ColumnID[".$col->id()."]",Input::old($col->id()),['class'=>'form-control', 'id' => $col->id()]);
                 $label = $col;
                 $width = $col->ColumnSize;
                 $class = 'text';
@@ -198,6 +212,55 @@ class Api {
         }
 
         return Api::FormFieldTemplate($label,$width,$class,$field);
+    }
+
+    public  static function CustomFormField($columnId)
+    {
+        $col = FormColumns::find($columnId);
+        $dataType = $col->dataType;
+
+        switch ($dataType){
+            case "Text":
+                $field = Form::text("ColumnID[".$col->id()."]",Input::old($col->id()),['class'=>'', 'id' => $col->id()]);
+                $label = $col;
+                $width = $col->ColumnSize;
+                $class = 'text';
+                break;
+            case "Textarea":
+                $field = Form::textarea("ColumnID[".$col->id()."]",Input::old($col->id()),['class'=>'', 'id' => $col->id()]);
+                $label = $col;
+                $width = $col->ColumnSize;
+                $class = 'text';
+                break;
+            case "Number":
+                $field = Form::number("ColumnID[".$col->id()."]",Input::old($col->id()),['class'=>'form-control', 'id' => $col->id()]);
+                $label = $col;
+                $width = $col->ColumnSize;
+                $class = 'number';
+                break;
+            case 'Option':
+                $values = Api::ResultArray($col->Notes);
+                $field = Form::select("ColumnID[".$col->id()."]",$values,Input::old($col->id()),['class'=>'ui dropdown', 'id' => $col->id()]);
+                $label = $col;
+                $width = $col->ColumnSize;
+                $class = 'select';
+                break;
+            case 'OptionCommaSeparated':
+                $values = explode(',',$col->Notes);
+                $field = Form::select("ColumnID[".$col->id()."]",$values,Input::old($col->id()),['class'=>'form-control', 'id' => $col->id()]);
+                $label = $col;
+                $width = $col->ColumnSize;
+                $class = 'select';
+                break;
+            default:
+                $field = Form::text("ColumnID[".$col->id()."]",Input::old($col->id()),['class'=>'form-control', 'id' => $col->id()]);
+                $label = $col;
+                $width = $col->ColumnSize;
+                $class = 'text';
+                break;
+        }
+
+        return Api::FieldTemplate($label,$width,$class,$field);
     }
 
     public static function AddFormData($params= array())

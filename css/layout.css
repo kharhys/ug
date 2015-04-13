@@ -1,0 +1,46 @@
+#layout {
+  width: 1000px;
+  margin: 1em auto;
+}
+
+#heading {
+  padding: 2em 0;
+  color: #fff;
+}
+
+#landing {
+  background: #fff;
+  box-shadow: 0 5px 10px #888;
+  margin-bottom: 3em;
+}
+
+#main {
+  margin-bottom: 1em;
+}
+
+#header {
+  background-color: #096E10;
+  box-shadow: 0 5px 10px #888;
+}
+
+#dashboard {
+  margin-bottom: 1em;
+}
+
+#dashboard-header {
+  margin: 0;
+  padding: 1em 0;
+}
+
+#dashboard-header .left.floated.header {
+  margin: 0;
+}
+
+#dashboard-menu {
+  margin: 0;
+}
+
+#dashboard-menu > .column {
+  padding-left: 0;
+  padding-right: 0;
+}

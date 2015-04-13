@@ -7,13 +7,12 @@
         <thead>
         <tr>
             <th>Name</th>
-            <th>Type</th>
             <th>Reg. No.</th>
             <th>PIN</th>
             <th>VAT No.</th>
             <th>Telephone (Line 1)</th>
             <th>Mobile No.</th>
-            <th>Country</th>
+            <th>County</th>
             <th></th>
         </tr>
         </thead>
@@ -32,7 +31,6 @@
                 "sAjaxSource": "{{route('list.businesses.ajax')}}",
                 "aoColumns": [
                     { "aaData": "CustomerName" },
-                    { "aaData": "type" },
                     { "aaData": "RegistrationNumber" },
                     { "aaData": "PIN" },
                     { "aaData": "VATNumber" },

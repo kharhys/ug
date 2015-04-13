@@ -24,6 +24,48 @@ Route::get('security/change',['as'=>'get.change.password','uses'=>'UsersControll
 Route::post('security/change',['as'=>'post.change.password','uses'=>'UsersController@changePassword'] );
 Route::any('logout',['as'=>'logout','uses'=>'UsersController@logout']);
 
+# refactory
+Route::group(['prefix' => 'portal'], function() {
+	Route::get('/', ['as' => 'portal.login', 'uses' => 'AuthenticationController@login']);
+
+	Route::get('register', ['as' => 'portal.get.register', 'uses' => 'AuthenticationController@getRegister']);
+	Route::post('login', ['as' => 'portal.post.login', 'uses' => 'AuthenticationController@postLogin']);
+
+	Route::get('logout', ['as' => 'portal.logout', 'uses' => 'AuthenticationController@logout']);
+
+	Route::get('profile', ['as' => 'portal.profile', 'uses' => 'AuthenticationController@x']);
+
+	# dashboard menu
+	Route::get('home', ['as' => 'portal.home', 'uses' => 'DashboardController@home']);
+	Route::get('manage', ['as' => 'portal.manage', 'uses' => 'DashboardController@manage']);
+	Route::get('support', ['as' => 'portal.support', 'uses' => 'DashboardController@support']);
+	Route::get('dashboard', ['as' => 'portal.dashboard', 'uses' => 'DashboardController@home']);
+	Route::get('services', ['as' => 'portal.services', 'uses' => 'DashboardController@services']);
+	Route::get('settings', ['as' => 'portal.settings', 'uses' => 'DashboardController@settings']);
+
+	Route::group(['prefix' => 'land'], function() {
+		Route::get('', ['as' => 'land.services', 'uses' => 'LandController@services']);
+		Route::get('invoice', ['as' => 'land.invoice', 'uses' => 'LandController@invoice']);
+
+		Route::get('search', ['as' => 'land.search', 'uses' => 'LandController@search']);
+		Route::post('search', ['as' => 'land.post.search', 'uses' => 'LandController@submitSearch']);
+
+		Route::get('register', ['as' => 'land.registration', 'uses' => 'LandController@register']);
+		Route::post('register', ['as' => 'land.submit.registration', 'uses' => 'LandController@submitRegistration']);
+	});
+
+
+	Route::group(['prefix' => 'lease'], function() {
+		Route::get('', ['as' => 'request.lease.contract', 'uses' => 'LeaseController@requestContract']);
+		Route::post('', ['as' => 'submit.lease.contract', 'uses' => 'LeaseController@submitContract']);
+	});
+
+	Route::group(['prefix' => 'sbp'], function() {
+		Route::get('', ['as' => 'request.sbp.service', 'uses' => 'SbpController@requestService']);
+		Route::post('', ['as' => 'submit.sbp.request', 'uses' => 'LeaseController@submitRequest']);
+	});
+});
+
 
 //must be authenticated to access these routes
 Route::group(['before'=>'auth'],function(){
@@ -66,9 +108,15 @@ Route::group(['before'=>'auth'],function(){
 		Route::get('{id}/invoice',['as'=>'my.invoice','uses'=>'HomeController@showInvoice']);
 	});
 
-	Route::group(['prefix'=>'land'],function(){
-		Route::get('registration',['as'=>'land.register','uses'=>'LandController@register']);
-		Route::post('registration',['as'=>'land.submit.registration','uses'=>'LandController@submitRegistration']);
+	Route::group(['prefix'=>'rentals'],function(){
+		Route::get('',['as'=>'rental','uses'=>'StallsController@index']);
+		Route::get('stalls',['as'=>'stall.registration','uses'=>'StallsController@register']);
+		Route::post('stalls',['as'=>'stall.submit.registration','uses'=>'StallsController@submitRegistration']);
+	});
+
+	Route::group(['prefix' => 'zones'], function(){
+		Route::get('list', ['as' => 'zones_list', 'uses' => 'ZonesController@getList' ]);
+		Route::get('', ['as' => 'zones', 'uses' => 'AuthenticationController@index' ]);
 	});
 
 

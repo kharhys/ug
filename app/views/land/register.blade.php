@@ -1,53 +1,35 @@
-@extends('app')
+@extends('land.services')
 
-@section('content')
-  <form class="form" action="{{ route('land.submit.registration') }}" method="post" enctype="multipart/form-data">
-      <div class="form-group">
-          <label>{{$form}}</label>
-          {{Form::hidden('FormID',$FormID,Input::old('FormID'),['data-transform'=>'input-control'])}}
-          {{Form::hidden('ServiceID',$ServiceID,Input::old('ServiceID'),['data-transform'=>'input-control'])}}
-          {{Form::hidden('CustomerID',Auth::id(),Input::old('CustomerID'),['data-transform'=>'input-control'])}}
-      </div>
+@section('service')
+  <form class="ui form" action="{{ route('land.submit.registration') }}" method="post" enctype="multipart/form-data">
+
+    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
       @foreach ($form->sections() as $section )
-          @if ($section->Show)
-          <div class="panel">
-              <div class="panel-header">{{$section}}</div>
-              <div class="panel-content">
-                  @foreach($section->columns() as $col)
-                      {{Api::CreateFormField($col->id())}}
-                  @endforeach
-
-              </div>
-          </div>
+        @if ($section->Show)
+          @if ( count($section->columns()) > 0 )
+            <h4 class=" ui blue dividing header">{{$section}} </h4>
+            @foreach($section->columns() as $col)
+              {{Api::CustomFormField($col->id())}}
+            @endforeach
           @endif
+        @endif
       @endforeach
-      @if ($form->documents->count() > 0)
-          <div class="panel">
-              <div class="panel-header">Attachments</div>
-              <div class="panel-content">
-                  @foreach($form->documents as $doc)
-                      <div class='form-group'>
-                          <label class='label'>{{$doc->type}}</label>
-                          <?php if ($doc->Mandatory) $mandatory = ['required'=>'required']; else $mandatory =[]; ?>
-                          <div class='input-control file'>
-                              {{Form::file('ServiceDocument['.$doc->id().']',$mandatory)}}
-                              <button class="btn-file"></button>
-                          </div>
-                      </div>
-                  @endforeach
 
-              </div>
-          </div>
-      @endif
-          <div class="form-actions">
-              <button type="button" class="button info">Save</button>
-              <button type="submit" class="button primary">Submit</button>
-          </div>
+      <div class="ui buttons">
+        <div class="ui button">Save</div>
+        <div class="or"></div>
+        <div class="ui positive button">Submit</div>
+      </div>
+
   </form>
 @endsection
 
-@section('page_js')
-<script>
-  console.log('its that sorry for the wait two');
-</script>
+@section('script')
+  @parent
+  <script type="text/javascript">
+     $( document ).ready(function() {
+       $('#land-menu #register').trigger('click');
+     });
+  </script>
 @endsection

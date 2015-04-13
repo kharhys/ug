@@ -1,28 +1,41 @@
 <?php
 class LandController extends BaseController{
 
-    public function index() {
-      $land = House::where('ServiceID', 389)->lists('HouseNo','HouseID');
-      return View::make('landrates', [ 'land'=> $land ]);
+    # refactory
+    public function services() {
+      return Redirect::route('land.search');
+    }
+
+    public function search() {
+      return View::make('land.search');
+    }
+
+    public function submitSearch() {
+      $rules = [
+          'PlotNumber'=>'required|exists:Property,PlotNumber'
+      ];
+      $valid = Validator::make(Input::all(),$rules);
+      if ($valid->fails()){
+          return Redirect::back();
+      }
+
+      $land = DB::table('Property as P')
+        ->where('PlotNumber',Input::get('PlotNumber'))
+        ->join('Customer as C', 'C.CustomerSupplierID', '=', 'P.CustomerSupplierID')
+        ->join('InvoiceHeader as IH', 'IH.CustomerID', '=', 'C.CustomerID')
+        ->get(['P.UPN', 'P.BlockLRNumber', 'P.PlotNumber', 'P.DocumentNumber', 'P.LandRates',
+               'P.OtherCharges', 'P.TotalAnnualAmount', 'P.TotalArrears', 'P.AccumulatedPenalty',
+               'P.CurrentBalance', 'P.CoOwner', 'C.CustomerName', 'C.Mobile1', 'C.IDNO',  'C.CustomerID']);
+      return View::make('land.show', ['land' => $land[0] ]);
     }
 
     public function register() {
-        $rules = [
-            'form'=>'required:exits:Form,FormID',
-            'ServiceNo'=>'required|exists:Services,ServiceID'
-        ];
-        $valid = Validator::make(Input::all(),$rules);
-        if ($valid->fails()){
-            return Redirect::route('list.departments');
-        }
-        $id = Input::get('form');
 
+      $formID = 3;
+      $serviceID = 1603;
+      $form = ServiceForm::findOrFail($formID);
 
-        $form = ServiceForm::findOrFail(intval($id));
-        //dd($form->sections());
-        //$myBusiness = Business::MyBusinesses(Auth::user()->CustomerProfileID)->lists('CustomerName','CustomerID');
-
-        return View::make('land.register',[ 'ServiceID'=>Input::get('ServiceNo'), 'FormID'=>$id, 'form'=>$form ]);
+      return View::make('land.register', [ 'ServiceID'=> $serviceID, 'form'=> $form ]);
     }
 
     public function submitRegistration() {

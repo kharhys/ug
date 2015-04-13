@@ -211,7 +211,6 @@ class ServicesController extends BaseController{
         if(Input::get('form') == 5) {
           $rules = [
               'form'=>'required:exits:Form,FormID',
-              'house'=>'required:exits:House,HouseID',
               'ServiceNo'=>'required|exists:Services,ServiceID',
               'CustomerID'=>'required|exists:Customer,CustomerID',
               'ColumnID.44' => 'required|string',

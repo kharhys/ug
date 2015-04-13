@@ -27,7 +27,7 @@ class AjaxController extends BaseController {
         $biz = Business::select([
             'CustomerID as id',
             'CustomerName',
-            'BusinessTypeName as type',
+            #'BusinessTypeName as type',
             'RegistrationNumber',
             'PIN',
             'VATNumber',
@@ -36,9 +36,10 @@ class AjaxController extends BaseController {
             'CountyName as country'
         ])
             ->where('CustomerProfileID',Auth::user()->CustomerProfileID)
-        ->join('CountyDetails','CountyDetails.CountyID','=','Customer.CountyID')
-        ->join('BusinessType','BusinessType.BusinessTypeID','=','Customer.BusinessTypeID');
-
+        ->join('CountyDetails','CountyDetails.CountyID','=','Customer.CountyID');
+        #->join('BusinessType','BusinessType.BusinessTypeID','=','Customer.BusinessTypeID')
+        #->get();
+        #dd($biz);
         return Datatables::of($biz)
             ->remove_column('id')
             #->add_column('view','<a href="{{route(\'view.biz\',$id)}}" >Show</a>')
@@ -50,16 +51,21 @@ class AjaxController extends BaseController {
     {
       $data = DB::table('ServiceHeader')
         ->select(['ServiceHeader.ServiceHeaderID as ID',
+              'ServiceHeader.PermitNo as No',
               'Customer.CustomerName',
               'Services.ServiceName',
               'ServiceHeader.CreatedDate as Date',
               'ServiceStatus.ServiceStatusDisplay'])
-        ->where('ServiceHeader.CustomerID', Auth::user()->CustomerProfileID)
+        ->where('ServiceHeader.CustomerID', Auth::id())
         ->join('Customer','Customer.CustomerID','=','ServiceHeader.CustomerID')
         ->join('Services','Services.ServiceID','=','ServiceHeader.ServiceID')
         ->join('ServiceStatus','ServiceStatus.ServiceStatusID','=','ServiceHeader.ServiceStatusID');
-      /*->get();
-        dd($data);
+        /*->get();
+        dd($path);
+        $permit = DB::table('serviceheader')
+          ->where('CustomerID', Auth::id())
+          ->where('FormID', 2)
+          ->pluck('PermitNo');
         $apps = Application::select([
             'ServiceHeader.ServiceHeaderID as ID',
             'Customer.CustomerName',
@@ -74,8 +80,12 @@ class AjaxController extends BaseController {
             */
         return Datatables::of($data)
             ->remove_column('ID')
+            ->remove_column('No')
             //->add_column('view','<a href="{{route(\'view.biz\',$ID)}}" >Show</a>')
-            ->add_column('view','<a href="./uploads/9-Registration-Certificate.pdf" >Show</a>')
+            //->add_column('view','<a href="./uploads/9-Registration-Certificate.pdf" >Show</a>')
+            ->add_column('view', function($model) {
+              return ($model->No) ? '<a href="'.(asset('revenueadmin/pdfdocs/sbps')).'/'.($model->No).'.pdf"> Show </a>' : '';
+            })
             ->make();
     }
 

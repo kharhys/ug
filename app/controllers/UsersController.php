@@ -212,7 +212,9 @@ class UsersController extends \BaseController {
             $csid = DB::table('Permits')->where('SBPNumber', Input::get('SBPNumber'))->pluck('CustomerSupplierID');
             return customize($csid);
           } else {
-            //update new customer in customers table
+            //create new customer in customers table
+            $params = ['CreatedBy'=>0,'status'=>1];
+
             $cust = new Customer();
             $cust->CreatedBy = 1;
             $cust->CustomerTypeID = 1;
@@ -220,7 +222,7 @@ class UsersController extends \BaseController {
             $cust->CustomerProfileID = Api::CustomerProfileID($params); #create profile
 
             $cust->save();
-            customize($cust->id());
+            return $cust->CustomerProfileID;
           }
         }
 
@@ -233,8 +235,11 @@ class UsersController extends \BaseController {
             $params = ['CreatedBy'=>0,'status'=>1];
             #$id = Api::CustomerProfileID($params);
             #dd($id);
+
             //create or update customer account before creating user account
             $id = createOrUpdate();
+
+
             $creds = array(
                 'FirstName' => $input['FirstName'],
                 'MiddleName' =>$input['MiddleName'],

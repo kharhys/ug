@@ -2,12 +2,13 @@
 
 @section('content')
 
-<form action="{{route('search.land')}}" method="post" enctype="multipart/form-data">
+
+<form action="{{route('land.search')}}" method="post" enctype="multipart/form-data">
 
   <fieldset>
     <legend>Search for land</legend>
     <div>
-      <input style="width:60%" name="search" id="search" type="text" placeholder="Enter Unique Parcel Number or LR/Block Number" class="form-control" />
+      <input style="width:60%" name="UPN" id="UPN" type="text" placeholder="Enter Unique Parcel Number or LR/Block Number" class="form-control" />
     </div>
 
     <br/>

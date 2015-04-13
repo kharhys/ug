@@ -4,7 +4,7 @@ class BusinessController extends BaseController{
     public function index(){
         $profile = Auth::user()->CustomerProfileID;
         $items = Business::MyBusinesses($profile)->get();
-
+        //dd($profile);
         return View::make('business.index',['entities'=>$items]);
     }
 
@@ -53,7 +53,6 @@ class BusinessController extends BaseController{
             $biz->VATNumber = $input['VATNumber'];
             $biz->PostalAddress = $input['PostalAddress'];
             $biz->PostalCode = $input['PostalCode'];
-            $biz->Town = $input['Town'];
             $biz->CountyID = $input['CountyID'];
             $biz->Telephone1 = $input['Telephone1'];
             $biz->Telephone2 = $input['Telephone2'];

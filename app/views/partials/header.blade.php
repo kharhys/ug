@@ -35,8 +35,8 @@
             <div class="tab-panel-group">
                 <div class="tab-group-content">
                     <a class="fluent-big-button" href="{{route('my.applications')}}"><i style="display:block" class="fa fa-2x fa-list-ul"> </i>  Applications</a>
-                    <a class="fluent-big-button" href="{{route('get.houserent')}}"><i style="display:block" class="fa fa-2x fa-bed"> </i>  Rent</a>
-                    <a class="fluent-big-button" href="{{route('get.stalls')}}"><i style="display:block" class="fa fa-2x fa-bed"> </i>  Stalls </a>
+                    <a class="fluent-big-button" href="{{route('rental')}}"><i style="display:block" class="fa fa-2x fa-bed"> </i>  Rentals </a>
+                    <!-- <a class="fluent-big-button" href="{{route('get.stalls')}}"><i style="display:block" class="fa fa-2x fa-bed"> </i>  Stalls </a> -->
                     <a class="fluent-big-button" href="{{route('get.landrates')}}"><i style="display:block" class="fa fa-2x fa-newspaper-o"> </i>  Rates</a>
                 </div>
                 <div class="tab-group-caption">Services</div>
