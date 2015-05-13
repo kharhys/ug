@@ -1,0 +1,29 @@
+<?php $__env->startSection('dashboard-content'); ?>
+  <div id="building-menu" class="ui fluid four item pointing menu">
+    <a id="approval" href="<?php echo route('building.approval'); ?>" class=" red item">
+      <i class="building outline icon"></i> Approval
+    </a>
+    <a id="occupation" href="<?php echo route('building.occupation'); ?>" class="red item">
+      <i class="university icon"></i> Occupation
+    </a>
+    <a id="fencing" href="<?php echo route('building.fencing'); ?>" class=" red item">
+      <i class="marker icon"></i> Fencing
+    </a>
+    <a id="fencing" href="<?php echo route('building.fencing'); ?>" class=" red item">
+      <i class="angle down icon"></i> More
+    </a>
+  </div>
+
+  <?php echo $__env->yieldContent('service'); ?>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('script'); ?>
+  @parent
+  <script type="text/javascript">
+     $( document ).ready(function() {
+       $('#department-menu #building').trigger('click');
+     });
+  </script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('dashboard.services', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

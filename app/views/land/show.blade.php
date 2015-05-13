@@ -61,7 +61,7 @@
       <tr>
         <th></th>
         <th colspan="4">
-          <a href="{{route('land.invoice')}}" class="ui right floated small primary labeled icon button">
+          <a href="{{route('land.invoice', $land->CustomerID)}}" class="ui right floated small primary labeled icon button">
             <i class="send icon"></i>
             Request Invoice
           </a>

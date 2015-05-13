@@ -7,10 +7,13 @@
   	<title>County Revenue</title>
 
     <link href="{{asset('css/layout.css')}}" rel="stylesheet">
+    <link href="{{asset('css/dropper/datedropper.css')}}" rel="stylesheet">
   	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.6/semantic.min.css">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-  	<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.6/semantic.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  	<script src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.6/semantic.min.js"></script>
+
+  	<script src="{{asset('js/datedropper.min.js')}}"></script>
 
   </head>
 

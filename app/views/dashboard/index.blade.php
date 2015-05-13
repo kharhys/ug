@@ -67,6 +67,7 @@
       @yield('dashboard-aside')
     </div>
     <div class="twelve wide column">
+      @include('partials.notification')
       @yield('dashboard-content')
     </div>
 </div>

@@ -1,0 +1,13 @@
+<?php $__env->startSection('content'); ?>
+    <label><h2>Services</h2></label>
+    <?php if($ServiceNo == 508): ?>
+      <br/>
+      <a class="button warning" href="<?php echo e(asset('uploads/signage.pdf')); ?>">View Signage Prices  </a>
+      <hr/>
+    <?php endif; ?>
+    <div class="panel-content">
+        <?php echo $__env->make('services.partials.form', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+    </div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -15,7 +15,7 @@ class DashboardController extends Controller {
   }
 
   public function settings() {
-    return View::make('dashboard.settings');
+    return Redirect::route('settings.account');
   }
 
   public function support() {

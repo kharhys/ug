@@ -1,0 +1,83 @@
+<?php $__env->startSection('service'); ?>
+
+  <table class="ui definition table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Description</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>Land Owner</td>
+        <td><?php echo $land->CustomerName; ?></td>
+      </tr>
+      <tr>
+        <td>Land Owner's ID Number</td>
+        <td><?php echo $land->IDNO; ?></td>
+      </tr>
+      <tr>
+        <td>Land Owner's Mobile Number</td>
+        <td><?php echo $land->Mobile1; ?></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Plot Number</td>
+        <td><?php echo $land->PlotNumber; ?></td>
+      </tr>
+      <tr>
+        <td>Document Number</td>
+        <td><?php echo $land->DocumentNumber; ?></td>
+      </tr>
+      <tr>
+        <td>Block/LR Number</td>
+        <td><?php echo $land->BlockLRNumber; ?></td>
+      </tr>
+      <tr>
+        <td>Universal Parcel Number</td>
+        <td><?php echo $land->UPN; ?></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Total Annual Amount</td>
+        <td>KSh. <?php echo $land->TotalAnnualAmount; ?></td>
+      </tr>
+      <tr>
+        <td>Current Balance</td>
+        <td>KSh. <?php echo $land->CurrentBalance; ?></td>
+      </tr>
+    </tbody>
+
+    <tfoot class="full-width">
+      <tr>
+        <th></th>
+        <th colspan="4">
+          <a href="<?php echo route('land.invoice', $land->CustomerID); ?>" class="ui right floated small primary labeled icon button">
+            <i class="send icon"></i>
+            Request Invoice
+          </a>
+        </th>
+      </tr>
+    </tfoot>
+
+  </table>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('script'); ?>
+  @parent
+  <script type="text/javascript">
+     $( document ).ready(function() {
+       $('#land-menu #search').trigger('click');
+     });
+  </script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('land.services', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

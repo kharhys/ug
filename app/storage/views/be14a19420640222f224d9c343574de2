@@ -1,0 +1,20 @@
+<?php $__env->startSection('dashboard-aside'); ?>
+  <div id="settings-menu" class="ui secondary vertical pointing menu">
+
+    <a id="account" class="red item" href="<?php echo route('land.services'); ?>">Account</a>
+    <a id="signage" class="red item" href="<?php echo route('signage.services'); ?>">Users</a>
+    <a id="signage" class="red item" href="<?php echo route('signage.services'); ?>">Businesses</a>
+
+  </div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('script'); ?>
+  @parent
+  <script type="text/javascript">
+     $( document ).ready(function() {
+       $('#dashboard-menu #settings').trigger('click');
+     });
+  </script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('dashboard.index', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

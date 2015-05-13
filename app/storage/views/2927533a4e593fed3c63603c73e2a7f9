@@ -1,0 +1,56 @@
+<?php $__env->startSection('service'); ?>
+  <div class="ui piled segment">
+
+    <table class="ui compact celled definition table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Property</th>
+          <th>Last Bill Due Date</th>
+          <th>Last Payment Date</th>
+          <th>Current Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach($property as $prop): ?>
+          <tr>
+            <td class="collapsing">
+              <form class="ui form" method="POST" action="<?php echo route('land.post.search'); ?>">
+                <input type="hidden" name="PlotNumber" value="<?php echo $prop->PlotNumber; ?>">
+                <button class="ui tiny basic button">
+                  <i class="linkify icon"></i>
+                </button>
+              </form>
+            </td>
+            <td><?php echo $prop->PlotNumber; ?> at <?php echo $prop->PhysicalAddress; ?></td>
+            <td><?php echo $prop->LastBillDueDate; ?></td>
+            <td><?php echo $prop->LastPaymentDate; ?></td>
+            <td>KSh.  <?php echo $prop->CurrentBalance; ?></td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+      <tfoot class="full-width">
+        <tr>
+          <th></th>
+          <th colspan="4">
+            <div class="ui right floated small labeled icon button">
+              <i class="send icon"></i> Request Invoice for all properties
+            </div>
+          </th>
+        </tr>
+      </tfoot>
+    </table>
+
+  </div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('script'); ?>
+  @parent
+  <script type="text/javascript">
+     $( document ).ready(function() {
+       $('#land-menu #pay').trigger('click');
+     });
+  </script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('land.services', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

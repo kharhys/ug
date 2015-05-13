@@ -3,25 +3,10 @@
 
 class AuthenticationController extends \BaseController {
 
-    /**
-     * just in case
-     */
     public function index(){
         return View::make('authentication.layout');
     }
 
-    public function x() {
-      $permit = DB::table('services')
-        ->where('ServiceCategoryID', 43)
-        #->update(['ServiceGroupID' => 21])
-        ->get(['ServiceName', 'ServiceGroupID']); #consider authd user having multiple sbps
-      dd($permit);
-      return View::make('sbp', ['permit' => 'revenueadmin/pdfdocs/sbps/'.$permit.'.pdf'] );
-    }
-
-    /**
-     * just in case
-     */
     public function login(){
         return View::make('authentication.login');
     }
@@ -47,31 +32,48 @@ class AuthenticationController extends \BaseController {
             $data = [$var,$hashed];
            // return Response::json($data);
 
+           function admit() {
+             $user =  User::find(Auth::user()->UserProfileID);
+
+             //dd($user);
+             //if($user->Active == false) {
+             //  Session::flash('error_msg','Account not activated');
+             //  return Redirect::to('login');
+             //}
+             if ($user->ChangePassword){
+                 Session::put('user__',$user->Email);
+
+                 Auth::logout();
+
+                 return Redirect::route('get.change.password');
+             }
+             #return Redirect::intended(route('portal.dashboard'));
+             return Redirect::route('portal.dashboard');
+           }
+
 
             if (Auth::attempt($credentials)){
-                $user =  User::find(Auth::user()->UserProfileID);
+                return admit();
 
-                //dd($user);
-                //if($user->Active == false) {
-                //  Session::flash('error_msg','Account not activated');
-                //  return Redirect::to('login');
-                //}
-                if ($user->ChangePassword){
-                    Session::put('user__',$user->Email);
-
-                    Auth::logout();
-
-                    return Redirect::route('get.change.password');
+            } elseif(isset($var)) {
+              #update md5 to bcrypt and login
+                if($var->password == md5(Input::get('password'))) { // If their password is still MD5
+                  $var->password = Hash::make(Input::get('password')); // Convert to new format
+                  $var->save();
                 }
-                return Redirect::intended(route('portal.dashboard'));
-            }else{
+                if (Auth::attempt($credentials)){
+                  return admit();
+                }
+            }
+
+            else{
                 Session::flash('error_msg','Invalid login credentials or account not activated');
-                return Redirect::to('login');
+                return Redirect::to('portal.login');
             }
         }
 
         //$data['error'] = "Username and/or Password is invalid";
-        return View::make('auth.login')
+        return View::make('authentication.login')
             ->withErrors($validator);
 
     }
@@ -83,12 +85,14 @@ class AuthenticationController extends \BaseController {
     public function profile(){
         $user = User::find(Auth::id());
         $usr = DB::table('UserProfile')
-          ->select(['FirstName', 'MiddleName', 'LastName', 'IdNumber', 'Mobile', 'Email', 'CustomerProfileID', 'UserProfileID'])
+          #->select(['FirstName', 'MiddleName', 'LastName', 'IdNumber', 'Mobile', 'Email', 'CustomerProfileID', 'UserProfileID'])
           ->where('UserProfile.UserProfileID', Auth::id())
           ->get();
-        dd($usr);
-        return View::make('auth.profile')
-            ->with('entity',$user);
+        #dd($usr);
+        Session::put('change_password_token',csrf_token());
+
+        #return View::make('auth.reset',['user__'=>Session::get('user__'),'change_password_token'=>Session::get('change_password_token')]);
+        return View::make('authentication.profile')->with('entity',$user);
     }
 
 
@@ -185,111 +189,68 @@ class AuthenticationController extends \BaseController {
      * Register user process
      */
     public function postRegister(){
-        $code = Input::get('CaptchaCode');
-        $rules = array(
-            'FirstName' => 'required|alpha|max:255',
-            'MiddleName' => 'required|alpha|max:255',
-            'LastName' => 'required|alpha|max:255',
-            'Mobile' => 'required|numeric',
-            'IDNumber' => 'required|numeric',
-            'email' => 'required|email|max:255|unique:UserProfile',
-            'email_confirmation' => 'same:email',
-            'password' => 'required|confirmed|min:6',
-            'UHN' => 'exists:Houses,UHN',
-            'UPN' => 'exists:Property,UPN',
-            'SBPNumber' => 'exists:Permits,SBPNumber'
-        );
+      $rules = array(
+          'FirstName' => 'required|max:255',
+          'MiddleName' => 'required|max:255',
+          'LastName' => 'required|max:255',
+          'Mobile' => 'required|max:15',
+          'IDNumber' => 'required|max:12',
+          'email' => 'required|email|max:255|unique:UserProfile',
+          'email_confirmation' => 'same:email',
+          'password' => 'required|confirmed|min:6',
+      );
 
-        //create or update customer profile
-        function createOrUpdate() {
-          function customize($id){
-            $name = Input::get('FirstName').' '.Input::get('MiddleName').' '.Input::get('LastName');
-            $record = [
-              'CustomerName' => $name, 'ContactPerson' => $name, 'IDNO' => Input::get('IDNumber'),
-              'Mobile1' => Input::get('Mobile'), 'Email' => Input::get('Email')
-            ];
-            Customer::where('CustomerSupplierID',$id)->update($record);
-            $pid = Customer::where('CustomerSupplierID',$id)->pluck('CustomerProfileID');
-            return $pid;
+      $v = Validator::make(Input::all(),$rules);
+
+      if ($v->passes()){
+          $data['confirm_token'] = md5(uniqid(mt_rand(), true));
+          $data['email']=Input::get('email');
+          $input = Input::all();
+          $params = [ 'CreatedBy' => 0, 'status'=>1 ];
+          $id = Api::CustomerProfileID($params);
+          #dd($id);
+          $creds = array(
+              'FirstName' => $input['FirstName'],
+              'MiddleName' =>$input['MiddleName'],
+              'LastName' =>$input['LastName'],
+              'IDNumber' => $input['IDNumber'],
+              'Mobile'=>$input['Mobile'],
+              'Email' => $input['email'],
+              'CustomerProfileID'=>$id,
+              'password' => $input['password'],
+              'ConfirmationToken' => $data['confirm_token'],
+              'Active'=>0,
+              'ChangePassword'=>0
+          );
+
+          if ($this->register($creds)){
+              $me = Api::FindUserBy('Email',$creds['Email']);
+              $pro = CustomerProfile::findOrFail($id);
+              $pro->CreatedBy = $me->id();
+              $pro->save();
+
+              $data['FirstName'] = $creds['FirstName'];
+              $data['LastName'] = $creds['LastName'];
+              $data['MiddleName'] = $creds['MiddleName'];
+              $data['password'] = $creds['password'];
+              $data['EmailTitle'] = 'New Account Information';
+              $data['subject'] = $data['EmailTitle'];
+              $data['email'] = $creds['Email'];
+
+              Api::sendMail('ActivateAccount',$data);
+
+              Session::flash('success_msg','User registration success. Please activate your account user the confirmation
+                  link sent to your email address');
+              return Redirect::route('portal.dashboard');
+          }else{
+              Session::flash('error_msg','Registration failure contact Support Team');
+              return Redirect::route('register')
+                  ->withInput(Input::except(array('password','password_confirmation')));
           }
-
-          if(Input::get('UHN')) {
-            //update house tenant in customers table
-            $csid = DB::table('HouseTenancy')->where('UHN',Input::get('UHN'))->pluck('CustomerSupplierID');
-            return customize($csid);
-          } elseif(Input::get('UPN')) {
-            //update land tenant in customers table
-            $csid = DB::table('Property')->where('UPN', Input::get('UPN'))->pluck('CustomerSupplierID');
-            return customize($csid);
-          } elseif(Input::get('SBPNumber')) {
-            //update licensed business in customers table
-            $csid = DB::table('Permits')->where('SBPNumber', Input::get('SBPNumber'))->pluck('CustomerSupplierID');
-            return customize($csid);
-          } else {
-            //update new customer in customers table
-            $cust = new Customer();
-            $cust->CreatedBy = 1;
-            $cust->CustomerTypeID = 1;
-            $cust->CustomerName = Input::get('FirstName');
-            $cust->CustomerProfileID = Api::CustomerProfileID($params); #create profile
-
-            $cust->save();
-            customize($cust->id());
-          }
-        }
-
-        $v = Validator::make(Input::all(),$rules);
-
-        if ($v->passes()){
-            $data['confirm_token'] = md5(uniqid(mt_rand(), true));
-            $data['email']=Input::get('email');
-            $input = Input::all();
-            $params = ['CreatedBy'=>0,'status'=>1];
-            #$id = Api::CustomerProfileID($params);
-            #dd($id);
-            //create or update customer account before creating user account
-            $id = createOrUpdate();
-            $creds = array(
-                'FirstName' => $input['FirstName'],
-                'MiddleName' =>$input['MiddleName'],
-                'LastName' =>$input['LastName'],
-                'IDNumber' => $input['IDNumber'],
-                'Mobile'=>$input['Mobile'],
-                'Email' => $input['email'],
-                'CustomerProfileID'=>$id,
-                'password' => $input['password'],
-                'ConfirmationToken' => $data['confirm_token'],
-                'Active'=>0,
-                'ChangePassword'=>0
-            );
-            if ($this->register($creds)){
-                $me = Api::FindUserBy('Email',$creds['Email']);
-                $pro = CustomerProfile::findOrFail($id);
-                $pro->CreatedBy = $me->id();
-                $pro->save();
-
-                $data['FirstName'] = $creds['FirstName'];
-                $data['LastName'] = $creds['LastName'];
-                $data['MiddleName'] = $creds['MiddleName'];
-                $data['password'] = $creds['password'];
-                $data['EmailTitle'] = 'New Account Information';
-                $data['subject'] = $data['EmailTitle'];
-                $data['email'] = $creds['Email'];
-
-                Api::sendMail('ActivateAccount',$data);
-
-                Session::flash('success_msg','User registration success. Please activate your account user the confirmation
-                    link sent to your email address');
-                return Redirect::route('home');
-            }else{
-                Session::flash('error_msg','Registration failure contact Support Team');
-                return Redirect::route('register')
-                    ->withInput(Input::except(array('password','password_confirmation')));
-            }
-        }
-        return Redirect::route('get.register')
-            ->withErrors($v)
-            ->withInput(Input::except(array('password','password_confirmation')));
+      }
+      return Redirect::route('portal.get.register')
+          ->withErrors($v)
+          ->withInput(Input::except(array('password','password_confirmation')));
     }
 
     /**

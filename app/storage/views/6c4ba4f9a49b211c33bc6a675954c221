@@ -1,0 +1,13 @@
+<?php $__env->startSection('content'); ?>
+<section class="row">
+  <div class="nine wide column">
+    <?php echo $__env->yieldContent('section'); ?>
+  </div>
+
+  <div class="seven wide column">
+    <?php echo $__env->yieldContent('aside'); ?>
+  </div>
+</section>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('portal', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

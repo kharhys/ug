@@ -1,6 +1,6 @@
 @extends('layout')
 
-@section('section')
+@section('aside')
 <div class="ui stacked segment">
   <h4 class="ui header">Online Services</h4>
     <hr/>
@@ -56,8 +56,8 @@
 </div>
 @endsection
 
-@section('aside')
-<div class="ui tall stacked segment">
+@section('section')
+<div class="ui stacked segment">
   <form class="ui form" method="POST" action="{{route('portal.post.login')}}">
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 

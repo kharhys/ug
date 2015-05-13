@@ -1,0 +1,56 @@
+<?php $__env->startSection('service'); ?>
+  <form class="ui form" action="<?php echo route('hire.premise'); ?>" method="post" enctype="multipart/form-data">
+
+    <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
+
+    <h4 class=" ui orange dividing header"> Application Details</h4>
+
+    <div class="required field">
+      <label>Premise</label>
+      <select name="service" id="service" class="ui dropdown">
+        <option value="">Premise</option>
+        <?php foreach($premises as $key => $premise): ?>
+          <option value=<?php echo $key; ?>> <?php echo $premise; ?> </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+
+    <div class="required field">
+      <label>Purpose of Hire</label>
+      <input name="purpose" type="text" placeholder="Purpose of Hire">
+    </div>
+
+    <div class="two fields">
+      <div class="required field">
+        <label>Start Date</label>
+        <input name="start" id="start" placeholder="Start Date" type="text">
+      </div>
+      <div class="required field">
+        <label>End Date</label>
+        <input name="end" id="end" placeholder="Start Date" type="text">
+      </div>
+    </div>
+
+    <div class="ui section divider"></div>
+
+    <div class="ui buttons">
+      <button class="ui button">Save</button>
+      <div class="or"></div>
+      <button class="ui positive button">Submit</button>
+    </div>
+
+  </form>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('script'); ?>
+  @parent
+  <script type="text/javascript">
+     $( document ).ready(function() {
+       $('#hire-menu #premises').trigger('click');
+       $('select.dropdown').dropdown();
+       $('#start, #end').dateDropper();
+     });
+  </script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('hire.services', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -3,7 +3,7 @@ class LandController extends BaseController{
 
     # refactory
     public function services() {
-      return Redirect::route('land.search');
+      return View::make('land.index');
     }
 
     public function search() {
@@ -29,6 +29,31 @@ class LandController extends BaseController{
       return View::make('land.show', ['land' => $land[0] ]);
     }
 
+    public function pay() {
+      $property = DB::table('Customer as C')
+        ->where('C.CustomerID', Auth::id())
+        ->join('Property as P', 'P.CustomerSupplierID', '=', 'C.CustomerSupplierID')
+        ->get(['P.PlotNumber', 'P.LastPaymentDate', 'P.LastBillDueDate', 'P.CurrentBalance', 'P.PhysicalAddress']);
+      return View::make('land.pay', ['property' => $property ]);
+
+    }
+
+    public function invoice($custId) {
+      # require customer id :landOwner
+      if(is_null(ServiceHeader::where('ServiceID', 1606)->where('CustomerID', $custId)->get()->first())){
+       dd('you found something that does not exist');
+      }
+
+      $inv = DB::table('ServiceHeader as S')
+        ->where('S.CustomerID', $custId)
+        ->where('S.ServiceID', 1606)
+        ->join('InvoiceLines as I', 'I.ServiceHeaderID', '=', 'S.ServiceHeaderID')
+        ->first();
+
+      $invoice = Invoice::findOrFail($inv->InvoiceHeaderID);
+      return View::make('land.invoice', ['invoice'=> $invoice]);
+    }
+
     public function register() {
 
       $formID = 3;
@@ -40,59 +65,52 @@ class LandController extends BaseController{
 
     public function submitRegistration() {
       $input = Input::all();
-      //dd($input);
       //return Response::json($input);
 
       $rules = [
-          'FormID'=>'required:exits:Form,FormID',
-          'ServiceID'=>'required|exists:Services,ServiceID',
-          'CustomerID'=>'required|exists:Customer,CustomerID',
-          'ColumnID.134' => 'required|numeric',
-          'ColumnID.135' => 'required|numeric',
-          'ColumnID.136' => 'string',
-          'ColumnID.137' => 'required|string',
-          'ColumnID.138' => 'required|string',
-          'ColumnID.139' => 'required|numeric',
-          'ColumnID.140' => 'required|numeric',
-          'ColumnID.141' => 'required|numeric',
-          'ColumnID.142' => 'required|numeric',
-          'ColumnID.143' => 'required|email'
+          'ColumnID.13' => 'required|numeric',
+          'ColumnID.17' => 'required|string',
+          'ColumnID.18' => 'required|string',
+          'ColumnID.19' => 'required|numeric',
+          'ColumnID.20' => 'required|numeric',
+          'ColumnID.21' => 'required|string',
+          'ColumnID.22' => 'required|string',
+          'ColumnID.23' => 'required|string',
+          'ColumnID.24' => 'required|string'
       ];
       $msgs = [
-        'ColumnID.134.required' => 'Title Number is required.',
-        'ColumnID.134.numeric' => 'Title Number may only contain numeric digits.',
-        'ColumnID.135.required' => 'Approximate Area (Square Meters) is required.',
-        'ColumnID.135.string' => 'Approximate Area (Square Meters) may only contain numeric digits.',
-        'ColumnID.136.string' => 'Registry Map Street (If Applicable) may only contain letters.',
-        'ColumnID.137.required' => 'Names are required.',
-        'ColumnID.137.string' => 'Names may only contain letters.',
-        'ColumnID.138.required' => 'ID/Passport/Certificate of registratio is required.',
-        'ColumnID.138.string' => 'ID/Passport/Certificate of registratio may only contain letters.',
-        'ColumnID.139.required' => 'KRA PIN is required.',
-        'ColumnID.139.numeric' => 'KRA PIN may only contain numeric digits.',
-        'ColumnID.140.required' => 'Postal Address is required.',
-        'ColumnID.140.numeric' => 'Postal Address may only contain numeric digits.',
-        'ColumnID.141.required' => 'Postal Code is required.',
-        'ColumnID.141.numeric' => 'Postal Code may only contain numeric digits.',
-        'ColumnID.142.required' => 'Mobile Phone Number is required.',
-        'ColumnID.142.numeric' => 'Mobile Phone Number may only contain numeric digits.',
-        'ColumnID.143.required' => 'Email is required.',
-        'ColumnID.143.email' => 'Email should be a valid email address.'
+        'ColumnID.13.required' => 'Plot Number is required.',
+        'ColumnID.13.numeric' => 'Plot Number may only contain numeric digits.',
+        'ColumnID.17.required' => 'Division/Zone is required.',
+        'ColumnID.17.string' => 'Division/Zone may only contain letters.',
+        'ColumnID.18.required' => 'Physical Local/Market/Trading Center is required.',
+        'ColumnID.18.string' => 'Physical Local/Market/Trading Center may only contain letters.',
+        'ColumnID.19.required' => 'Measurements is required.',
+        'ColumnID.19.numeric' => 'Measurements may only contain numbers.',
+        'ColumnID.20.required' => 'Area is required.',
+        'ColumnID.20.numeric' => 'Area may only contain numbers.',
+        'ColumnID.21.required' => 'Units Of Measure is required.',
+        'ColumnID.21.string' => 'Units Of Measure may only contain letters.',
+        'ColumnID.22.required' => 'Roll Type is required.',
+        'ColumnID.22.string' => 'Roll Type may only contain letters.',
+        'ColumnID.23.required' => 'Property Use is required.',
+        'ColumnID.23.string' => 'Property Use may only contain letters.',
+        'ColumnID.24.required' => 'Nature Of Interest is required.',
+        'ColumnID.24.string' => 'Nature Of Interest may only contain letters.'
       ];
       $valid = Validator::make(Input::all(),$rules, $msgs);
       if ($valid->fails()){
           return Redirect::back()
               ->withErrors($valid);
-          //dd($input);
           //return Redirect::route('list.departments');
       }
 
       $app = new Application();
-      $app->CustomerID = Input::get('CustomerID');
-      $app->ServiceID = Input::get('ServiceNo');
-      $app->FormID = Input::get('form');
-      $app->SubmissionDate = date('Y-m-d H:i:s');
+      $app->FormID = 3;
+      $app->ServiceID = 1603;
       $app->ServiceStatusID = 1;
+      $app->CustomerID = Auth::id();
+      $app->SubmissionDate = date('Y-m-d H:i:s');
       $app->save();
 
       $columns = Input::get('ColumnID');
@@ -107,30 +125,8 @@ class LandController extends BaseController{
 
       }
 
-      if (Input::hasFile('ServiceDocument')){
-          $files = Input::file('ServiceDocument');
-          foreach ($files as $key=> $value){
-              $path =false;
-              $doc = FormDocument::find($key);
-              $params['file'] = $value;
-              $params['path'] = Application::$url;
-              $params['name'] = $doc->type;
-              $path = Api::upload($value,$params);
-
-              if ($path){
-                  $upload = new ServiceDocument();
-                  $upload->ServiceDocumentName = $doc->type;
-                  $upload->ServiceHeaderID = $app->id();
-                  $upload->FileName = $path;
-                  $upload->CreatedDate = date('Y-m-d H:i:s');
-                  $upload->CreatedBy = Auth::id();
-                  $upload->save();
-              }
-          }
-      }
-
-      Session::flash('success_msg','Application sent successfully');
-      return Redirect::route('list.departments');
+      Session::flash('success_msg','Application sent successfully!');
+      return Redirect::route('portal.dashboard');
     }
 
 }

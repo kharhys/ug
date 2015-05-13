@@ -1,0 +1,13 @@
+<h3>Select Department</h3>
+<?php foreach($entities as $entity): ?>
+
+    <a class="tile double bg-<?php echo Api::RandomBackgroundColor(); ?>" href="<?php echo route('list.services',$entity->id()); ?>">
+        <div class="tile-content icon">
+            <i class="icon-folder"></i>
+        </div>
+        <div class="tile-status">
+            <span class="name"><?php echo $entity; ?></span>
+        </div>
+    </a>
+
+ <?php endforeach; ?>

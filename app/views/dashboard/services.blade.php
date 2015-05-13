@@ -5,8 +5,12 @@
 
   <div class="header item">Department</div>
     <a id="land" class="blue item" href="{{route('land.services')}}">Land</a>
-    <a id="signage" class="blue item" href="{{route('land.services')}}">Signage</a>
-    <a id="building" class="blue item" href="{{route('land.services')}}">Building</a>
+    <a id="hire" class="orange item" href="{{route('hire.services')}}">Hire</a>
+    <a id="signage" class="orange item" href="{{route('signage.services')}}">Signage</a>
+    <a id="building" class="red item" href="{{route('building.services')}}">Building</a>
+    <a id="housing" class="teal item" href="{{route('housing.services')}}">Housing</a>
+    <a id="permits" class="teal item" href="{{route('permits.services')}}">Permits</a>
+    <a id="weights" class="teal item" href="{{route('weights.services')}}">Weights</a>
 
   <div class="header item">
     Our Company
@@ -34,7 +38,7 @@
 @endsection
 
 @section('dashboard-content')
-  ices
+  
 @endsection
 
 @section('script')

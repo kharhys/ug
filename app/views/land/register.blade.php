@@ -16,10 +16,12 @@
         @endif
       @endforeach
 
+      <div class="ui section divider"></div>
+
       <div class="ui buttons">
         <div class="ui button">Save</div>
         <div class="or"></div>
-        <div class="ui positive button">Submit</div>
+        <button class="ui green button"> Submit </button>
       </div>
 
   </form>
@@ -30,6 +32,7 @@
   <script type="text/javascript">
      $( document ).ready(function() {
        $('#land-menu #register').trigger('click');
+       $('select').dropdown();
      });
   </script>
 @endsection

@@ -1,0 +1,56 @@
+<?php $__env->startSection('service'); ?>
+  <?php if(count($applications) == 0): ?>
+  <div class="ui tall stacked orange segment">
+    <h2 class="ui center aligned icon header">
+      <i class="circular hide icon"></i>
+      Nothing Here!
+      <div class="sub header">You have not made any applications for this ervice yet</div>
+    </h2>
+  </div>
+  <?php else: ?>
+    <h5 class="ui center aligned header">
+      <div class="ui mini orange horizontal statistic">
+        <div class="value">
+          <?php echo count($applications); ?>
+
+        </div>
+        <div class="label">
+          Application(s).
+        </div>
+      </div>
+    </h5>
+
+    <table class="ui compact celled definition table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Date Submitted</th>
+          <th>Service Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach($applications as $application): ?>
+          <tr>
+            <td><i class="blue linkify icon"></i> </td>
+            <td><?php echo $application->Date; ?></td>
+            <td><?php echo $application->ServiceName; ?></td>
+            <td><?php echo $application->ServiceStatusDisplay; ?></td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  <?php endif; ?>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('script'); ?>
+  @parent
+  <script type="text/javascript">
+     $( document ).ready(function() {
+       $('#permits-menu #renewal').trigger('click');
+     });
+  </script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('permits.services', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

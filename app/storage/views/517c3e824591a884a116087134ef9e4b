@@ -1,0 +1,70 @@
+<form class="form" action="" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label><?php echo $form; ?></label>
+        <div class="input-control select">
+            <?php echo Form::select('CustomerID',$businesses,Input::old('CustomerID'),['data-transform'=>'input-control']); ?>
+
+        </div>
+    </div>
+    <?php foreach($form->sections() as $section ): ?>
+        <?php if($section->Show): ?>
+        <div class="panel">
+            <div class="panel-header"><?php echo $section; ?></div>
+            <div class="panel-content">
+                <?php foreach($section->columns() as $col): ?>
+                    <?php echo Api::CreateFormField($col->id()); ?>
+
+                <?php endforeach; ?>
+
+            </div>
+        </div>
+        <?php endif; ?>
+    <?php endforeach; ?>
+    <?php if($form->documents->count() > 0): ?>
+        <div class="panel">
+            <div class="panel-header">Attachments</div>
+            <div class="panel-content">
+                <?php foreach($form->documents as $doc): ?>
+                    <div class='form-group'>
+                        <label class='label'><?php echo $doc->type; ?></label>
+                        <?php if ($doc->Mandatory) $mandatory = ['required'=>'required']; else $mandatory =[]; ?>
+                        <div class='input-control file'>
+                            <?php echo Form::file('ServiceDocument['.$doc->id().']',$mandatory); ?>
+
+                            <button class="btn-file"></button>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+
+            </div>
+        </div>
+    <?php endif; ?>
+        <div class="form-actions">
+            <button type="button" class="button info">Save</button>
+            <button type="submit" class="button primary">Submit</button>
+        </div>
+</form>
+
+<?php $__env->startSection('page_js'); ?>
+<script>
+  $("[name='ColumnID[120]']").change(function(){
+    var id = $(this).val();
+    console.log(id);
+    getWards(id);
+  });
+
+  function getWards(id)
+  {
+    $.post('<?php echo route('get.wards'); ?>',{SubCountyID: id},function(data){
+      //console.log(id, data);
+      var toAppend = '';
+        if (data.code == 200){
+          $.each(data.wards,function(i,o){
+           toAppend += '<option value="'+o.WardID+'">'+o.WardName+'</option>';
+         });
+        }
+        $("[name='ColumnID[8]']").html(toAppend);
+    });
+  }
+</script>
+<?php $__env->stopSection(); ?>

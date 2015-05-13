@@ -1,0 +1,38 @@
+<?php $__env->startSection('service'); ?>
+  <form class="ui form" action="<?php echo route('building.submit.approval'); ?>" method="post" enctype="multipart/form-data">
+
+    <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
+
+      <?php foreach($form->sections() as $section ): ?>
+        <?php if($section->Show): ?>
+          <?php if( count($section->columns()) > 0 ): ?>
+            <h4 class=" ui teal dividing header"><?php echo $section; ?> </h4>
+            <?php foreach($section->columns() as $col): ?>
+              <?php echo Api::CustomFormField($col->id()); ?>
+
+            <?php endforeach; ?>
+          <?php endif; ?>
+        <?php endif; ?>
+      <?php endforeach; ?>
+
+      <div class="ui section divider"></div>
+
+      <div class="ui buttons">
+        <button class="ui button">Save</button>
+        <div class="or"></div>
+        <button class="ui positive button">Submit</button>
+      </div>
+
+  </form>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('script'); ?>
+  @parent
+  <script type="text/javascript">
+     $( document ).ready(function() {
+       $('#housing-menu #stall').trigger('click');
+     });
+  </script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('housing.services', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
