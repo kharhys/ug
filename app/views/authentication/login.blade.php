@@ -1,55 +1,28 @@
 @extends('layout')
 
 @section('aside')
-<div class="ui stacked segment">
-  <h4 class="ui header">Online Services</h4>
+<div class="ui segment">
+  <h4 class="ui small header">Online Services</h4>
     <hr/>
     <p>&nbsp</p>
 
     <p>The following are some of the services availbale on this portal to logged in users.</p>
-    <div class="ui list">
-      <a class="item">
-        <i class="top aligned right triangle icon"></i>
-        <div class="content">
-          <div class="header">Single Business Permits</div>
-          <div class="description">[Quick how to ...] Application for || renewal </div>
+    <div class="ui accordion">
+
+      @foreach($services as $service)
+        <!-- accordion item -->
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <strong class="ui small header"> {{$service->Title}} </strong>
         </div>
-      </a>
-      <a class="item">
-        <i class="top aligned right triangle icon"></i>
         <div class="content">
-          <div class="header">County Houses </div>
-          <div class="description">[Quick how to ...] Application for || Payment </div>
+          <p>
+            {{$service->ShortDecsription}}
+          </p>
+            <a class="ui teal" href="#"> More Information <i class="ui right double angle icon"></i>  </a>
         </div>
-      </a>
-      <a class="item">
-        <i class="top aligned right triangle icon"></i>
-        <div class="content">
-          <div class="header">County Stalls</div>
-          <div class="description">[Quick how to ...] Application for || Payment </div>
-        </div>
-      </a>
-      <a class="item">
-        <i class="top aligned right triangle icon"></i>
-        <div class="content">
-          <div class="header"> Signages </div>
-          <div class="description">[Quick how to ...] Application  || approval </div>
-        </div>
-      </a>
-      <a class="item">
-        <i class="top aligned right triangle icon"></i>
-        <div class="content">
-          <div class="header"> Building </div>
-          <div class="description">[Quick how to ...] Plan approval || .. </div>
-        </div>
-      </a>
-      <a class="item">
-        <i class="top aligned right triangle icon"></i>
-        <div class="content">
-          <div class="header"> Land </div>
-          <div class="description">[Quick how to ...] Payment rates || registration </div>
-        </div>
-      </a>
+      @endforeach
+
     </div>
 
     <p>&nbsp<br/>&nbsp</p>
@@ -57,11 +30,13 @@
 @endsection
 
 @section('section')
-<div class="ui stacked segment">
+<div class="ui segment">
   <form class="ui form" method="POST" action="{{route('portal.post.login')}}">
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
     <h4 class="ui dividing header">Login to access your account</h4>
+
+    @include('partials.notification')
 
     <div class="required field">
       <label>Email</label>
@@ -117,6 +92,7 @@
 <script type="text/javascript">
   $( document ).ready(function() {
       console.log( "ready!" );
+      $('.ui.accordion').accordion();
   });
 </script>
 @endsection

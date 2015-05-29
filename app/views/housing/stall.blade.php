@@ -1,7 +1,7 @@
 @extends('housing.services')
 
 @section('service')
-  <form class="ui form" action="{{ route('building.submit.approval') }}" method="post" enctype="multipart/form-data">
+  <form class="ui form" action="{{ route('housing.stall.application') }}" method="post" enctype="multipart/form-data">
 
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
@@ -32,6 +32,7 @@
   <script type="text/javascript">
      $( document ).ready(function() {
        $('#housing-menu #stall').trigger('click');
+       $('.ui.dropdown').dropdown();
      });
   </script>
 @endsection

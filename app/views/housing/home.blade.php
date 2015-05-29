@@ -1,20 +1,20 @@
 @extends('housing.services')
 
 @section('service')
-  <form class="ui form" action="{{ route('building.submit.approval') }}" method="post" enctype="multipart/form-data">
+  <form class="ui form" action="{{ route('housing.house.application') }}" method="post" enctype="multipart/form-data">
 
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-      @foreach ($form->sections() as $section )
-        @if ($section->Show)
-          @if ( count($section->columns()) > 0 )
-            <h4 class=" ui teal dividing header">{{$section}} </h4>
-            @foreach($section->columns() as $col)
-              {{Api::CustomFormField($col->id())}}
-            @endforeach
-          @endif
+    @foreach ($form->sections() as $section )
+      @if ($section->Show)
+        @if ( count($section->columns()) > 0 )
+          <h4 class=" ui teal dividing header">{{$section}} </h4>
+          @foreach($section->columns() as $col)
+            {{Api::CustomFormField($col->id())}}
+          @endforeach
         @endif
-      @endforeach
+      @endif
+    @endforeach
 
       <div class="ui section divider"></div>
 

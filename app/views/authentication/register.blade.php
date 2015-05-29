@@ -26,12 +26,12 @@
     <div class="ui hidden divider"></div>
     <div class="two fields">
       <div class="required field">
-        <label>ID Number</label>
+        <label>ID/Passport Number</label>
         <input type="text" name="IDNumber" placeholder="National ID Number" value="{{ Input::old('IDNumber') }}">
       </div>
       <div class="required field">
-        <label>Phone Number</label>
-        <input type="text" name="Mobile" placeholder="Mobile Phone Number" value="{{ Input::old('Mobile') }}">
+        <label>Mobile Number</label>
+        <input type="number" name="Mobile" placeholder="Mobile Phone Number" value="{{ Input::old('Mobile') }}">
       </div>
     </div>
 
@@ -79,6 +79,10 @@
     </div>
 
     <button class="fluid ui orange submit button"> Register </button>
+    <div class="ui horizontal divider">
+      Already have an account?
+    </div>
+    <a class="ui center aligned" href="{{route('portal.login')}}"> Login </a> 
 
   </form>
 </div>

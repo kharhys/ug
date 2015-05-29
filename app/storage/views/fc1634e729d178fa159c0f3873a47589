@@ -1,0 +1,42 @@
+<?php $__env->startSection('service'); ?>
+  <div class="ui basic segment">
+
+    <table class="ui definition table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Plot Number</th>
+          <th>Date Registered</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach($property as $prop): ?>
+          <tr>
+            <td class="collapsing">
+              <form class="ui form" method="POST" action="<?php echo route('land.post.search'); ?>">
+                <input type="hidden" name="PlotNumber" value="<?php echo $prop->Value; ?>" />
+                <button class="ui tiny basic button">
+                  <a> <i class="info circle icon"></i> View </a>
+                </button>
+              </form>
+            </td>
+            <td><?php echo $prop->Value; ?></td>
+            <td><?php echo $prop->SubmissionDate; ?></td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+
+  </div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('script'); ?>
+  @parent
+  <script type="text/javascript">
+     $( document ).ready(function() {
+       $('#land-menu #pay').trigger('click');
+     });
+  </script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('land.services', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

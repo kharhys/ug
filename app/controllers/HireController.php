@@ -3,7 +3,7 @@
 class HireController extends Controller {
 
   public function services() {
-    return Redirect::route('hire.stadia');
+    return View::make('hire.index');
   }
 
   public function stadia() {
@@ -114,6 +114,23 @@ class HireController extends Controller {
 
     Session::flash('success_msg','Application sent successfully!');
     return Redirect::route('portal.dashboard');
+  }
+
+  public function applications() {
+    $data = DB::table('ServiceHeader')
+      ->select(['ServiceHeader.ServiceHeaderID',
+            'ServiceHeader.PermitNo as No',
+            'Services.ServiceName',
+            'ServiceHeader.CreatedDate as Date',
+            'ServiceStatus.ServiceStatusDisplay'])
+      ->where('ServiceHeader.CustomerID', Auth::user()->customerID())
+      ->where('Services.ServiceGroupID', 21)
+      ->join('Customer','Customer.CustomerID','=','ServiceHeader.CustomerID')
+      ->join('Services','Services.ServiceID','=','ServiceHeader.ServiceID')
+      ->join('ServiceStatus','ServiceStatus.ServiceStatusID','=','ServiceHeader.ServiceStatusID')
+      ->get();
+    return View::make('permits.applications', ['applications'=> $data]);
+
   }
 
 }

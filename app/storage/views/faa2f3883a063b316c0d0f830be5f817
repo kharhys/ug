@@ -1,0 +1,69 @@
+<?php $__env->startSection('content'); ?>
+<form class="form" action="<?php echo route('stall.submit.registration'); ?>" method="post" enctype="multipart/form-data">
+
+  <div class="container">
+    <div class="row">
+      <div class="span8">
+
+            <div class="form-group">
+                <?php echo Form::hidden('FormID',$FormID,Input::old('FormID'),['data-transform'=>'input-control']); ?>
+
+                <?php echo Form::hidden('ServiceID',$ServiceID,Input::old('ServiceID'),['data-transform'=>'input-control']); ?>
+
+                <?php echo Form::hidden('CustomerID',Auth::id(),Input::old('CustomerID'),['data-transform'=>'input-control']); ?>
+
+            </div>
+            <?php foreach($form->sections() as $section ): ?>
+                <?php if($section->Show): ?>
+                <div class="panel">
+                    <div class="panel-header"><?php echo $section; ?></div>
+                    <div class="panel-content">
+                        <?php foreach($section->columns() as $col): ?>
+                            <?php echo Api::CreateFormField($col->id()); ?>
+
+                        <?php endforeach; ?>
+
+                    </div>
+                </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+            <?php if($form->documents->count() > 0): ?>
+                <div class="panel">
+                    <div class="panel-header">Attachments</div>
+                    <div class="panel-content">
+                        <?php foreach($form->documents as $doc): ?>
+                            <div class='form-group'>
+                                <label class='label'><?php echo $doc->type; ?></label>
+                                <?php if ($doc->Mandatory) $mandatory = ['required'=>'required']; else $mandatory =[]; ?>
+                                <div class='input-control file'>
+                                    <?php echo Form::file('ServiceDocument['.$doc->id().']',$mandatory); ?>
+
+                                    <button class="btn-file"></button>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+
+                    </div>
+                </div>
+            <?php endif; ?>
+                <div class="form-actions">
+                    <button type="button" class="button info">Save</button>
+                    <button type="submit" class="button primary">Submit</button>
+                </div>
+
+      </div>
+      <div class="span4">
+        <h3>Instructions </h3>
+        <hr/>
+        <p>
+          Specify a stall number if that stall had been registered to you <br/> <br/>
+          Otherwise for new applicants, leave that field blank.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</form>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

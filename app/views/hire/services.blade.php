@@ -2,19 +2,9 @@
 
 
 @section('dashboard-content')
-  <div id="hire-menu" class="ui fluid three item pointing menu">
-    <a id="stadia" href="{{route('hire.stadia')}}" class=" orange item">
-      <i class="soccer icon"></i> Stadia
-    </a>
-    <a id="premises" href="{{route('hire.premises')}}" class="orange item">
-      <i class="university icon"></i> Premises
-    </a>
-    <a id="equipment" href="{{route('hire.equipment')}}" class="orange item">
-      <i class="announcement icon"></i> Equipment
-    </a>
+  <div class="ui segment">
+    @yield('service')
   </div>
-
-  @yield('service')
 @endsection
 
 @section('script')
@@ -22,6 +12,7 @@
   <script type="text/javascript">
      $( document ).ready(function() {
        $('#department-menu #hire').trigger('click');
+         $('#department-menu').accordion('open', 3);
      });
   </script>
 @endsection

@@ -1,6 +1,6 @@
 <div class="ui basic segment">
     @if(Session::has('error_msg'))
-        <div class="oaerror danger">{{Session::get('error_msg')}}</div>
+        <div class="ui red segment">{{Session::get('error_msg')}}</div>
     @endif
 
     @if(Session::has('success_msg'))
@@ -16,7 +16,7 @@
     @endif
 
     @if (count($errors) > 0)
-    <div class="ui warning message">
+    <div class="ui red segment">
       <div class="header">Please Correct the following error(s)</div>
       <ul class="list">
         @foreach ($errors->all() as $error)

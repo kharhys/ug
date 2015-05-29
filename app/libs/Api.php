@@ -146,10 +146,12 @@ class Api {
         ";
     }
 
-    public static function ResultArray($query)
+    public static function ResultArray($q)
     {
+        $query = str_replace("#ID","0" ,$q);
         $result = DB::select($query);
         $vars = (array)$result;
+        $values[] = [0 => 'select'];
         foreach ($vars as $var){
             //convert object class to array;
             $object = (array)$var;
@@ -162,10 +164,12 @@ class Api {
         }
         //$it = new RecursiveIteratorIterator(new RecursiveArrayIterator($values));
         $vals = [];
-        foreach($values as $v) {
-          //array_push($vals, $v);
-          foreach($v as $key => $val) {
-            $vals[$key] = $val;
+        if($values) {
+          foreach($values as $v) {
+            //array_push($vals, $v);
+            foreach($v as $key => $val) {
+              $vals[$key] = $val;
+            }
           }
         }
 
@@ -239,8 +243,12 @@ class Api {
                 $class = 'number';
                 break;
             case 'Option':
+                $listener = '';
+                if (!$col->FilterColumnID == null && !$col->FilterColumnID == 0) {
+                  $listener = 'filterSelect(this.value,'.$col->FilterColumnID.')';
+                }
                 $values = Api::ResultArray($col->Notes);
-                $field = Form::select("ColumnID[".$col->id()."]",$values,Input::old($col->id()),['class'=>'ui dropdown', 'id' => $col->id()]);
+                $field = Form::select("ColumnID[".$col->id()."]",$values,Input::old($col->id()),['class'=>'ui dropdown', 'id' => $col->id(), 'onChange' => $listener ]);
                 $label = $col;
                 $width = $col->ColumnSize;
                 $class = 'select';
@@ -290,6 +298,5 @@ class Api {
     {
         return '<img class="'.$class.'" src="'.asset('images/stamp-paid.png').'" height="'.$height.'" width="'.$width.'" />';
     }
-
 
 }

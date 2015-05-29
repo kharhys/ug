@@ -23,37 +23,18 @@
         <td>Land Owner's Mobile Number</td>
         <td>{{$land->Mobile1}}</td>
       </tr>
-      <tr>
-        <td></td>
-        <td></td>
       </tr>
       <tr>
         <td>Plot Number</td>
-        <td>{{$land->PlotNumber}}</td>
-      </tr>
-      <tr>
-        <td>Document Number</td>
-        <td>{{$land->DocumentNumber}}</td>
-      </tr>
-      <tr>
-        <td>Block/LR Number</td>
-        <td>{{$land->BlockLRNumber}}</td>
-      </tr>
-      <tr>
-        <td>Universal Parcel Number</td>
-        <td>{{$land->UPN}}</td>
+        <td>{{$land->Value}}</td>
       </tr>
       <tr>
         <td></td>
         <td></td>
       </tr>
       <tr>
-        <td>Total Annual Amount</td>
-        <td>KSh. {{$land->TotalAnnualAmount}}</td>
-      </tr>
-      <tr>
-        <td>Current Balance</td>
-        <td>KSh. {{$land->CurrentBalance}}</td>
+        <td>Application Status</td>
+        <td>{{$land->ServiceStatusDisplay}}</td>
       </tr>
     </tbody>
 
@@ -61,10 +42,16 @@
       <tr>
         <th></th>
         <th colspan="4">
-          <a href="{{route('land.invoice', $land->CustomerID)}}" class="ui right floated small primary labeled icon button">
-            <i class="send icon"></i>
-            Request Invoice
-          </a>
+          @if ($land->ServiceStatusDisplay === 'Approved Pending Payment')
+            <a href="{{route('land.invoice', $land->CustomerID)}}" class="ui right floated small primary labeled icon button">
+              <i class="send icon"></i>
+              Request Invoice
+            </a>
+          @else
+          <div class="ui ignored warning message">
+            <p>This application requires further processing!</p>
+          </div>
+          @endif
         </th>
       </tr>
     </tfoot>

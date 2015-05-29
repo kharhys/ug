@@ -144,6 +144,42 @@ class ServicesController extends BaseController{
       return Response::json($response);
     }
 
+    public function filterSelect() {
+
+      $id = Input::get('FilterColumnID');
+      $q = FormColumns::where('FormColumnID', intval($id))->pluck('Notes');
+      $query = str_replace("#ID", Input::get('SelectedID'), $q);
+      //dd($query);
+      $result = DB::select($query);
+
+      $vars = (array)$result;
+      $values[] = [0 => 'select'];
+      foreach ($vars as $var){
+          //convert object class to array;
+          $object = (array)$var;
+
+          //get an array list of the values
+          $list = array_values($object);
+
+          //create an array index of values
+          $values[] = [$list[0]=>$list[1]];
+      }
+      //$it = new RecursiveIteratorIterator(new RecursiveArrayIterator($values));
+      $vals = [];
+      if($values) {
+        foreach($values as $v) {
+          //array_push($vals, $v);
+          foreach($v as $key => $val) {
+            $vals[$key] = $val;
+          }
+        }
+      }
+
+      $response = [ 'code'=>200, 'message'=>'Options found', 'options'=> $vals ];
+
+      return ($response);
+    }
+
     public function getApplyForm() {
         $rules = [
             'form'=>'required:exits:Form,FormID',

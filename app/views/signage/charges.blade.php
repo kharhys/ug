@@ -1,7 +1,7 @@
 @extends('signage.services')
 
 @section('service')
-  <div class="ui segment">
+  <div class="ui basic segment">
 
     <table class="ui compact celled definition table">
       <thead>

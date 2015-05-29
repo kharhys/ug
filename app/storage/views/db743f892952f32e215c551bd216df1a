@@ -1,0 +1,31 @@
+<?php $__env->startSection('dashboard-content'); ?>
+
+<div class="ui center aligned segment">
+  <div class="ui three item fluid labeled icon menu">
+    <a id="application" href="<?php echo route('signage.apply'); ?>" class="item">
+      <i class="plus square outline icon"></i>
+      Apply for Advertisement
+    </a>
+    <a id="charges" href="<?php echo route('signage.charges'); ?>" class="item">
+      <i class="wait icon"></i>
+      View Service Charges
+    </a>
+    <a id="applications" href="<?php echo route('signage.applications'); ?>" class="item">
+      <i class="wait icon"></i>
+      View Applications
+    </a>
+  </div>
+</div>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('script'); ?>
+  @parent
+  <script type="text/javascript">
+     $( document ).ready(function() {
+       $('#signage-menu #search').trigger('click');
+     });
+  </script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('signage.services', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

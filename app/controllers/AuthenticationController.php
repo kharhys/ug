@@ -8,7 +8,8 @@ class AuthenticationController extends \BaseController {
     }
 
     public function login(){
-        return View::make('authentication.login');
+        $services = DB::table('FeaturedServices')->get(['Title', 'ShortDecsription']);
+        return View::make('authentication.login', ['services' => $services]);
     }
 
 
@@ -36,10 +37,10 @@ class AuthenticationController extends \BaseController {
              $user =  User::find(Auth::user()->UserProfileID);
 
              //dd($user);
-             //if($user->Active == false) {
-             //  Session::flash('error_msg','Account not activated');
-             //  return Redirect::to('login');
-             //}
+             if($user->Active == false) {
+               Session::flash('error_msg','Account not activated');
+               return Redirect::to('login');
+             }
              if ($user->ChangePassword){
                  Session::put('user__',$user->Email);
 
@@ -54,9 +55,10 @@ class AuthenticationController extends \BaseController {
 
             if (Auth::attempt($credentials)){
                 return admit();
-
-            } elseif(isset($var)) {
+            } //elseif(isset($var)) {
+              elseif (!$var == false) {
               #update md5 to bcrypt and login
+              //dd($var);
                 if($var->password == md5(Input::get('password'))) { // If their password is still MD5
                   $var->password = Hash::make(Input::get('password')); // Convert to new format
                   $var->save();
@@ -66,14 +68,15 @@ class AuthenticationController extends \BaseController {
                 }
             }
 
-            else{
+            else {
                 Session::flash('error_msg','Invalid login credentials or account not activated');
-                return Redirect::to('portal.login');
+                return Redirect::route('portal.login');
             }
         }
 
         //$data['error'] = "Username and/or Password is invalid";
-        return View::make('authentication.login')
+        $services = DB::table('FeaturedServices')->get(['Title', 'ShortDecsription']);
+        return View::make('authentication.login',['services' => $services])
             ->withErrors($validator);
 
     }
@@ -193,7 +196,7 @@ class AuthenticationController extends \BaseController {
           'FirstName' => 'required|max:255',
           'MiddleName' => 'required|max:255',
           'LastName' => 'required|max:255',
-          'Mobile' => 'required|max:15',
+          'Mobile' => 'required|numeric',
           'IDNumber' => 'required|max:12',
           'email' => 'required|email|max:255|unique:UserProfile',
           'email_confirmation' => 'same:email',
@@ -239,9 +242,9 @@ class AuthenticationController extends \BaseController {
 
               Api::sendMail('ActivateAccount',$data);
 
-              Session::flash('success_msg','User registration success. Please activate your account user the confirmation
+              Session::flash('success_msg','User registration success. Please activate your account using the confirmation
                   link sent to your email address');
-              return Redirect::route('portal.dashboard');
+              return Redirect::route('portal.get.register');
           }else{
               Session::flash('error_msg','Registration failure contact Support Team');
               return Redirect::route('register')

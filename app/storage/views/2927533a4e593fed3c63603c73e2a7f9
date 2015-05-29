@@ -1,14 +1,13 @@
 <?php $__env->startSection('service'); ?>
-  <div class="ui piled segment">
+  <div class="ui basic segment">
 
-    <table class="ui compact celled definition table">
+    <table class="ui definition table">
       <thead>
         <tr>
           <th></th>
-          <th>Property</th>
-          <th>Last Bill Due Date</th>
-          <th>Last Payment Date</th>
-          <th>Current Balance</th>
+          <th>Plot Number</th>
+          <th>Application Status</th>
+          <th>Application Date</th>
         </tr>
       </thead>
       <tbody>
@@ -16,16 +15,15 @@
           <tr>
             <td class="collapsing">
               <form class="ui form" method="POST" action="<?php echo route('land.post.search'); ?>">
-                <input type="hidden" name="PlotNumber" value="<?php echo $prop->PlotNumber; ?>">
+                <input type="hidden" name="PlotNumber" value="<?php echo $prop->Value; ?>" />
                 <button class="ui tiny basic button">
-                  <i class="linkify icon"></i>
+                  <a> <i class="info circle icon"></i> View </a>
                 </button>
               </form>
             </td>
-            <td><?php echo $prop->PlotNumber; ?> at <?php echo $prop->PhysicalAddress; ?></td>
-            <td><?php echo $prop->LastBillDueDate; ?></td>
-            <td><?php echo $prop->LastPaymentDate; ?></td>
-            <td>KSh.  <?php echo $prop->CurrentBalance; ?></td>
+            <td><?php echo $prop->Value; ?></td>
+            <td><?php echo $prop->ServiceStatusName; ?></td>
+            <td><?php echo $prop->SubmissionDate; ?></td>
           </tr>
         <?php endforeach; ?>
       </tbody>

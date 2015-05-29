@@ -1,0 +1,31 @@
+<?php $__env->startSection('dashboard-content'); ?>
+
+<div class="ui center aligned segment">
+  <div class="ui three item fluid labeled icon menu">
+    <a id="home" href="<?php echo route('housing.home'); ?>" class="item">
+      <i class="soccer icon"></i>
+      Hire House
+    </a>
+    <a id="stall" href="<?php echo route('housing.stall'); ?>" class="item">
+      <i class="university icon"></i>
+      Hire Stall
+    </a>
+    <a id="applications" href="<?php echo route('housing.applications'); ?>" class="item">
+      <i class="announcement icon"></i>
+      View Applications
+    </a>
+  </div>
+</div>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('script'); ?>
+  @parent
+  <script type="text/javascript">
+     $( document ).ready(function() {
+       $('#housing-menu #search').trigger('click');
+     });
+  </script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('housing.services', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

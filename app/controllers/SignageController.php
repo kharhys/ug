@@ -2,7 +2,7 @@
 class SignageController extends BaseController{
 
     public function services() {
-      return Redirect::route('signage.apply');
+      return View::make('signage.index');
     }
 
 
@@ -28,7 +28,7 @@ class SignageController extends BaseController{
               'Services.ServiceName',
               'ServiceHeader.CreatedDate as Date',
               'ServiceStatus.ServiceStatusDisplay'])
-        ->where('ServiceHeader.CustomerID', Auth::id())
+        ->where('ServiceHeader.CustomerID', Auth::user()->CustomerID())
         ->where('Services.ServiceCategoryID', 55)
         ->join('Customer','Customer.CustomerID','=','ServiceHeader.CustomerID')
         ->join('Services','Services.ServiceID','=','ServiceHeader.ServiceID')
@@ -69,9 +69,9 @@ class SignageController extends BaseController{
 
       $app->FormID = 10;
       $app->ServiceStatusID = 1;
-      $app->CustomerID = Auth::id();
       $app->ServiceID = Input::get('service');
       $app->SubmissionDate = date('Y-m-d H:i:s');
+      $app->CustomerID = Auth::user()->customerID();
 
       $app->save();
 

@@ -1,16 +1,15 @@
 @extends('land.services')
 
 @section('service')
-  <div class="ui piled segment">
+  <div class="ui basic segment">
 
-    <table class="ui compact celled definition table">
+    <table class="ui definition table">
       <thead>
         <tr>
           <th></th>
-          <th>Property</th>
-          <th>Last Bill Due Date</th>
-          <th>Last Payment Date</th>
-          <th>Current Balance</th>
+          <th>Plot Number</th>
+          <th>Application Status</th>
+          <th>Application Date</th>
         </tr>
       </thead>
       <tbody>
@@ -18,16 +17,15 @@
           <tr>
             <td class="collapsing">
               <form class="ui form" method="POST" action="{{route('land.post.search')}}">
-                <input type="hidden" name="PlotNumber" value="{{$prop->PlotNumber}}">
+                <input type="hidden" name="PlotNumber" value="{{$prop->Value}}" />
                 <button class="ui tiny basic button">
-                  <i class="linkify icon"></i>
+                  <a> <i class="info circle icon"></i> View </a>
                 </button>
               </form>
             </td>
-            <td>{{$prop->PlotNumber}} at {{$prop->PhysicalAddress}}</td>
-            <td>{{$prop->LastBillDueDate}}</td>
-            <td>{{$prop->LastPaymentDate}}</td>
-            <td>KSh.  {{$prop->CurrentBalance}}</td>
+            <td>{{$prop->Value}}</td>
+            <td>{{$prop->ServiceStatusName}}</td>
+            <td>{{$prop->SubmissionDate}}</td>
           </tr>
         @endforeach
       </tbody>

@@ -1,9 +1,9 @@
 <?php $__env->startSection('dashboard-aside'); ?>
   <div id="settings-menu" class="ui secondary vertical pointing menu">
 
-    <a id="account" class="red item" href="<?php echo route('land.services'); ?>">Account</a>
-    <a id="signage" class="red item" href="<?php echo route('signage.services'); ?>">Users</a>
-    <a id="signage" class="red item" href="<?php echo route('signage.services'); ?>">Businesses</a>
+    <a id="account" class="red item" href="<?php echo route('portal.account'); ?>">Profile</a>
+    <a id="signage" class="red item" href="<?php echo route('portal.account'); ?>">Users</a>
+    <a id="signage" class="red item" href="<?php echo route('portal.account'); ?>">Businesses</a>
 
   </div>
 <?php $__env->stopSection(); ?>

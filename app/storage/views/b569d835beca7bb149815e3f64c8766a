@@ -21,37 +21,18 @@
         <td>Land Owner's Mobile Number</td>
         <td><?php echo $land->Mobile1; ?></td>
       </tr>
-      <tr>
-        <td></td>
-        <td></td>
       </tr>
       <tr>
         <td>Plot Number</td>
-        <td><?php echo $land->PlotNumber; ?></td>
-      </tr>
-      <tr>
-        <td>Document Number</td>
-        <td><?php echo $land->DocumentNumber; ?></td>
-      </tr>
-      <tr>
-        <td>Block/LR Number</td>
-        <td><?php echo $land->BlockLRNumber; ?></td>
-      </tr>
-      <tr>
-        <td>Universal Parcel Number</td>
-        <td><?php echo $land->UPN; ?></td>
+        <td><?php echo $land->Value; ?></td>
       </tr>
       <tr>
         <td></td>
         <td></td>
       </tr>
       <tr>
-        <td>Total Annual Amount</td>
-        <td>KSh. <?php echo $land->TotalAnnualAmount; ?></td>
-      </tr>
-      <tr>
-        <td>Current Balance</td>
-        <td>KSh. <?php echo $land->CurrentBalance; ?></td>
+        <td>Application Status</td>
+        <td><?php echo $land->ServiceStatusDisplay; ?></td>
       </tr>
     </tbody>
 
@@ -59,10 +40,16 @@
       <tr>
         <th></th>
         <th colspan="4">
-          <a href="<?php echo route('land.invoice', $land->CustomerID); ?>" class="ui right floated small primary labeled icon button">
-            <i class="send icon"></i>
-            Request Invoice
-          </a>
+          <?php if($land->ServiceStatusDisplay === 'Approved Pending Payment'): ?>
+            <a href="<?php echo route('land.invoice', $land->CustomerID); ?>" class="ui right floated small primary labeled icon button">
+              <i class="send icon"></i>
+              Request Invoice
+            </a>
+          <?php else: ?>
+          <div class="ui ignored warning message">
+            <p>This application requires further processing!</p>
+          </div>
+          <?php endif; ?>
         </th>
       </tr>
     </tfoot>

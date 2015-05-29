@@ -18,12 +18,7 @@
 
       <div class="ui section divider"></div>
 
-      <div class="ui buttons">
-        <button class="ui button">Save</button>
-        <div class="or"></div>
-        <button class="ui positive button">Submit</button>
-      </div>
-
+      <button class="fluid ui positive button">Submit</button>
   </form>
 @endsection
 
@@ -31,7 +26,7 @@
   @parent
   <script type="text/javascript">
      $( document ).ready(function() {
-       $('#permits-menu #application').trigger('click');
+       $('#department-menu #permits').trigger('click');
        $('.ui.dropdown').dropdown();
      });
   </script>

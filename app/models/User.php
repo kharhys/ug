@@ -57,6 +57,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->UserProfileID;
 	}
 
+	public function customerID(){
+		return DB::table('Customer')
+			->where('UserProfileID', $this->UserProfileID)
+			->pluck('CustomerID');
+	}
+
 	public function businesses()
 	{
 		return Business::where('');

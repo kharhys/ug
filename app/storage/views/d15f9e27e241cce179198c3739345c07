@@ -1,24 +1,15 @@
 <?php $__env->startSection('dashboard-content'); ?>
-  <div id="signage-menu" class="ui fluid three item pointing menu">
-    <a id="application" href="<?php echo route('signage.apply'); ?>" class=" orange item">
-      <i class="add circle icon"></i> Apply
-    </a>
-    <a id="charges" href="<?php echo route('signage.charges'); ?>" class="orange item">
-      <i class="external share icon"></i> Service Charges
-    </a>
-    <a id="applications" href="<?php echo route('signage.applications'); ?>" class=" orange item">
-      <i class="print icon"></i> Applications
-    </a>
+  <div class="ui segment">
+    <?php echo $__env->yieldContent('service'); ?>
   </div>
-
-  <?php echo $__env->yieldContent('service'); ?>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('script'); ?>
   @parent
   <script type="text/javascript">
      $( document ).ready(function() {
-       $('#department-menu #signage').trigger('click');
+       $('#department-menu #land').trigger('open');
+       $('#department-menu').accordion('open', 4);
      });
   </script>
 <?php $__env->stopSection(); ?>

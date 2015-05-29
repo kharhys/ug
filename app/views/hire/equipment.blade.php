@@ -5,7 +5,7 @@
 
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
-    <h4 class=" ui orange dividing header"> Application Details</h4>
+    <h4 class=" ui orange dividing header"> Application for hire of County Equipment</h4>
 
     <div class="required field">
       <label>Equipment</label>

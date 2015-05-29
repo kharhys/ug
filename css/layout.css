@@ -1,3 +1,7 @@
+#account-type {
+  border: 2px solid pink;
+}
+
 #layout {
   width: 1000px;
   margin: 1em auto;

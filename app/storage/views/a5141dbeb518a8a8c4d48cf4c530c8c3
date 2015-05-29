@@ -1,0 +1,22 @@
+<?php $__env->startSection('content'); ?>
+
+
+<form action="<?php echo route('land.search'); ?>" method="post" enctype="multipart/form-data">
+
+  <fieldset>
+    <legend>Search for land</legend>
+    <div>
+      <input style="width:60%" name="UPN" id="UPN" type="text" placeholder="Enter Unique Parcel Number or LR/Block Number" class="form-control" />
+    </div>
+
+    <br/>
+    <div>
+      <input class="warning" type="submit" value="Search" />
+    </div>
+  </fieldset>
+
+</form>
+
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('app', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

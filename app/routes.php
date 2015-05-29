@@ -90,6 +90,7 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::get('invoice/{id}/pay',['as'=>'pay.invoice','uses'=>'PaymentController@getPaymentStatus']);
 			Route::any('estate/house',['as'=>'get.houses','uses'=>'ServicesController@fetchEstateHouses']);
 			Route::any('subcounty/wards',['as'=>'get.wards','uses'=>'ServicesController@fetchWards']);
+			Route::any('ui/filter',['as'=>'filter.select','uses'=>'ServicesController@filterSelect']);
 			Route::any('',['as'=>'update','uses'=>'ServicesController@update']);
 		});
 	});
@@ -119,6 +120,7 @@ Route::group([], function() {
 		# land rates services
 		Route::group(['prefix' => 'land'], function() {
 			Route::get('pay', ['as' => 'land.pay', 'uses' => 'LandController@pay']);
+			Route::get('plots', ['as' => 'land.plots', 'uses' => 'LandController@plots']);
 			Route::get('', ['as' => 'land.services', 'uses' => 'LandController@services']);
 			Route::get('search', ['as' => 'land.search', 'uses' => 'LandController@search']);
 			Route::get('invoice/{id}', ['as' => 'land.invoice', 'uses' => 'LandController@invoice']);
@@ -151,8 +153,8 @@ Route::group([], function() {
 			Route::get('stall', ['as' => 'housing.stall', 'uses' => 'HousingController@stall']);
 			Route::get('', ['as' => 'housing.services', 'uses'  =>  'HousingController@services']);
 			Route::get('applications', ['as' => 'housing.applications', 'uses' => 'HousingController@applications']);
-			Route::get('occupation', ['as' => 'building.occupation', 'uses' => 'BuildingController@occupation']);
-			Route::post('approval', ['as' => 'building.submit.approval', 'uses' => 'BuildingController@submitApproval']);
+			Route::post('house', ['as' => 'housing.house.application', 'uses' => 'HousingController@houseApplication']);
+			Route::post('stall', ['as' => 'housing.stall.application', 'uses' => 'HousingController@stallApplication']);
 		});
 
 		# settings
@@ -171,13 +173,16 @@ Route::group([], function() {
 			Route::get('premises', ['as' => 'hire.premises', 'uses' => 'HireController@premises']);
 			Route::post('purposes', ['as' => 'hire.purposes', 'uses' => 'HireController@purposes']);
 			Route::get('equipment', ['as' => 'hire.equipment', 'uses' => 'HireController@equipment']);
+			Route::get('applications', ['as' => 'hire.applications', 'uses' => 'HireController@applications']);
 		});
 
 		# permits
 		Route::group(['prefix' => 'permits'], function() {
-			Route::get('', ['as' => 'permits.services', 'uses' => 'PermitsController@services']);
 			Route::get('apply', ['as' => 'permits.apply', 'uses' => 'PermitsController@apply']);
+			Route::get('index', ['as' => 'permits.index', 'uses' => 'PermitsController@index']);
 			Route::get('renew', ['as' => 'permits.renew', 'uses' => 'PermitsController@renew']);
+			Route::get('', ['as' => 'permits.services', 'uses' => 'PermitsController@services']);
+			Route::get('extend/{id}', ['as' => 'permits.extend', 'uses' => 'PermitsController@extend']);
 			Route::post('application', ['as' => 'permits.submit.application', 'uses' => 'PermitsController@submitApplication']);
 		});
 
@@ -196,8 +201,4 @@ Route::group([], function() {
 
 	});
 
-
 });
-
-
-//must be authenticated to access these routes

@@ -1,0 +1,31 @@
+<?php $__env->startSection('dashboard-content'); ?>
+
+<div class="ui center aligned segment">
+  <div class="ui three item fluid labeled icon menu">
+    <a id="stadia" href="<?php echo route('hire.stadia'); ?>" class="item">
+      <i class="soccer icon"></i>
+      Hire Stadium
+    </a>
+    <a id="premises" href="<?php echo route('hire.premises'); ?>" class="item">
+      <i class="university icon"></i>
+      Hire Premise
+    </a>
+    <a id="equipment" href="<?php echo route('hire.equipment'); ?>" class="item">
+      <i class="announcement icon"></i>
+      Hire Equipment
+    </a>
+  </div>
+</div>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('script'); ?>
+  @parent
+  <script type="text/javascript">
+     $( document ).ready(function() {
+       $('#hire-menu #search').trigger('click');
+     });
+  </script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('hire.services', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

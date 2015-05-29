@@ -1,4 +1,5 @@
 <?php
+
 class LandController extends BaseController{
 
     # refactory
@@ -11,42 +12,57 @@ class LandController extends BaseController{
     }
 
     public function submitSearch() {
-      $rules = [
-          'PlotNumber'=>'required|exists:Property,PlotNumber'
-      ];
-      $valid = Validator::make(Input::all(),$rules);
-      if ($valid->fails()){
-          return Redirect::back();
-      }
 
-      $land = DB::table('Property as P')
-        ->where('PlotNumber',Input::get('PlotNumber'))
-        ->join('Customer as C', 'C.CustomerSupplierID', '=', 'P.CustomerSupplierID')
-        ->join('InvoiceHeader as IH', 'IH.CustomerID', '=', 'C.CustomerID')
-        ->get(['P.UPN', 'P.BlockLRNumber', 'P.PlotNumber', 'P.DocumentNumber', 'P.LandRates',
-               'P.OtherCharges', 'P.TotalAnnualAmount', 'P.TotalArrears', 'P.AccumulatedPenalty',
-               'P.CurrentBalance', 'P.CoOwner', 'C.CustomerName', 'C.Mobile1', 'C.IDNO',  'C.CustomerID']);
-      return View::make('land.show', ['land' => $land[0] ]);
+      $property = DB::table('ServiceHeader as H')
+        ->where('H.CustomerID', Auth::user()->CustomerID())
+        ->where('F.Value', Input::get('PlotNumber'))
+        ->join('Customer as U', 'U.CustomerID', '=', 'H.CustomerID')
+        ->join('FormData as F', 'F.ServiceHeaderID', '=', 'H.ServiceHeaderID')
+        ->join('FormColumns as C', 'C.FormColumnID', '=', 'F.FormColumnID')
+        ->join('ServiceStatus as S', 'S.ServiceStatusID', '=', 'H.ServiceStatusID')
+        ->get(['H.CustomerID', 'C.FormColumnName', 'F.Value', 'S.ServiceStatusDisplay', 'H.CreatedDate', 'U.CustomerName', 'U.Email', 'U.Mobile1', 'U.IDNO']);
+        //->get();
+      //dd($property);
+      return View::make('land.show', ['land' => $property[0] ]);
     }
 
     public function pay() {
-      $property = DB::table('Customer as C')
-        ->where('C.CustomerID', Auth::id())
-        ->join('Property as P', 'P.CustomerSupplierID', '=', 'C.CustomerSupplierID')
-        ->get(['P.PlotNumber', 'P.LastPaymentDate', 'P.LastBillDueDate', 'P.CurrentBalance', 'P.PhysicalAddress']);
+      $property = DB::table('ServiceHeader as H')
+        ->where('H.CustomerID', Auth::user()->CustomerID())
+        ->where('F.FormColumnID', 13)
+        ->join('FormData as F', 'F.ServiceHeaderID', '=', 'H.ServiceHeaderID')
+        ->join('FormColumns as C', 'C.FormColumnID', '=', 'F.FormColumnID')
+        ->join('ServiceStatus as S', 'S.ServiceStatusID', '=', 'H.ServiceStatusID')
+        ->get(['C.FormColumnName', 'F.Value', 'S.ServiceStatusName', 'H.SubmissionDate']);
+        //->get();
+        //dd($property);
       return View::make('land.pay', ['property' => $property ]);
+
+    }
+
+    public function plots() {
+      $property = DB::table('ServiceHeader as H')
+        ->where('H.CustomerID', Auth::user()->CustomerID())
+        ->where('S.ServiceStatusName', 'Approved')
+        ->where('F.FormColumnID', 13)
+        ->join('FormData as F', 'F.ServiceHeaderID', '=', 'H.ServiceHeaderID')
+        ->join('FormColumns as C', 'C.FormColumnID', '=', 'F.FormColumnID')
+        ->join('ServiceStatus as S', 'S.ServiceStatusID', '=', 'H.ServiceStatusID')
+        ->get(['C.FormColumnName', 'F.Value', 'S.ServiceStatusName', 'H.SubmissionDate']);
+        //->get();
+      return View::make('land.plots', [ 'property' => $property ]);
 
     }
 
     public function invoice($custId) {
       # require customer id :landOwner
-      if(is_null(ServiceHeader::where('ServiceID', 1606)->where('CustomerID', $custId)->get()->first())){
+      if(is_null(ServiceHeader::where('ServiceID', 1603)->where('CustomerID', $custId)->get()->first())){
        dd('you found something that does not exist');
       }
 
       $inv = DB::table('ServiceHeader as S')
         ->where('S.CustomerID', $custId)
-        ->where('S.ServiceID', 1606)
+        ->where('S.ServiceID', 1603)
         ->join('InvoiceLines as I', 'I.ServiceHeaderID', '=', 'S.ServiceHeaderID')
         ->first();
 
@@ -71,28 +87,22 @@ class LandController extends BaseController{
           'ColumnID.13' => 'required|numeric',
           'ColumnID.17' => 'required|string',
           'ColumnID.18' => 'required|string',
-          'ColumnID.19' => 'required|numeric',
           'ColumnID.20' => 'required|numeric',
           'ColumnID.21' => 'required|string',
-          'ColumnID.22' => 'required|string',
           'ColumnID.23' => 'required|string',
           'ColumnID.24' => 'required|string'
       ];
       $msgs = [
         'ColumnID.13.required' => 'Plot Number is required.',
-        'ColumnID.13.numeric' => 'Plot Number may only contain numeric digits.',
+        'ColumnID.13.string' => 'Plot Number may only contain letters.',
         'ColumnID.17.required' => 'Division/Zone is required.',
         'ColumnID.17.string' => 'Division/Zone may only contain letters.',
         'ColumnID.18.required' => 'Physical Local/Market/Trading Center is required.',
         'ColumnID.18.string' => 'Physical Local/Market/Trading Center may only contain letters.',
-        'ColumnID.19.required' => 'Measurements is required.',
-        'ColumnID.19.numeric' => 'Measurements may only contain numbers.',
         'ColumnID.20.required' => 'Area is required.',
         'ColumnID.20.numeric' => 'Area may only contain numbers.',
         'ColumnID.21.required' => 'Units Of Measure is required.',
         'ColumnID.21.string' => 'Units Of Measure may only contain letters.',
-        'ColumnID.22.required' => 'Roll Type is required.',
-        'ColumnID.22.string' => 'Roll Type may only contain letters.',
         'ColumnID.23.required' => 'Property Use is required.',
         'ColumnID.23.string' => 'Property Use may only contain letters.',
         'ColumnID.24.required' => 'Nature Of Interest is required.',
@@ -109,8 +119,8 @@ class LandController extends BaseController{
       $app->FormID = 3;
       $app->ServiceID = 1603;
       $app->ServiceStatusID = 1;
-      $app->CustomerID = Auth::id();
       $app->SubmissionDate = date('Y-m-d H:i:s');
+      $app->CustomerID = Auth::user()->customerID();
       $app->save();
 
       $columns = Input::get('ColumnID');

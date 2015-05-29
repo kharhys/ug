@@ -45,9 +45,6 @@
       <a class="green item" id="home" href="{{route('portal.home')}}">
         <i class="home icon"></i> Home
       </a>
-      <a class="red item" id="manage" href="{{route('portal.manage')}}">
-        <i class="options icon"></i> Manage
-      </a>
       <a class="blue item" id="services" href="{{route('portal.services')}}">
         <i class="tasks icon"></i> Services
       </a>
@@ -57,6 +54,9 @@
       <a class="purple item" id="support" href="{{route('portal.support')}}">
         <i class="help icon"></i> Support
       </a>
+      <div class="right menu" id="account-type">
+        <a class="item">Account Type</a>
+      </div>
     </div>
 
   </div>
@@ -85,5 +85,19 @@
            .removeClass('active');
      }
    });
+
+   var filterSelect = function(id, target){
+     $.post('{{route('filter.select')}}',{FilterColumnID: target, SelectedID: id },function(data){
+      var targetEl = "[name='ColumnID[" + target + "]']";
+       var toAppend = '';
+         if (data.code == 200){
+           $.each(data.options,function(id,name){
+            toAppend += '<option value="'+id+'" selected>'+name+'</option>';
+          });
+         }
+         $(targetEl).html(toAppend);
+         $(targetEl).parent().dropdown('set text', 'select');
+     });
+   }
 </script>
 @endsection
